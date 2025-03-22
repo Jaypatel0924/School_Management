@@ -193,9 +193,9 @@ const TeacherDashboard = () => {
     try {
       setLoading(true);
       const [assignmentsRes, materialsRes, scheduleRes] = await Promise.all([
-        axios.get('/api/assignments/my-assignments'),
-        axios.get('/api/materials'),
-        axios.get('/api/schedule')
+        axios.get('http://localhost:5000/api/assignments/my-assignments'),
+        axios.get('http://localhost:5000/api/materials'),
+        axios.get('http://localhost:5000/api/schedule')
       ]);
 
       setAssignments(assignmentsRes.data.data.assignments);
@@ -220,7 +220,7 @@ const TeacherDashboard = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await axios.post('/api/assignments', assignmentForm);
+      await axios.post('http://localhost:5000/api/assignments', assignmentForm);
       toast.success('Assignment created successfully');
       setShowAddAssignment(false);
       fetchDashboardData();
@@ -244,7 +244,7 @@ const TeacherDashboard = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await axios.post('/api/materials', materialForm);
+      await axios.post('http://localhost:5000/api/materials', materialForm);
       toast.success('Material uploaded successfully');
       setShowAddMaterial(false);
       fetchDashboardData();
@@ -268,7 +268,7 @@ const TeacherDashboard = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await axios.post('/api/schedule', scheduleForm);
+      await axios.post('http://localhost:5000/api/schedule', scheduleForm);
       toast.success('Class scheduled successfully');
       setShowScheduleClass(false);
       fetchDashboardData();

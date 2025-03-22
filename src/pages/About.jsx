@@ -7,9 +7,9 @@ const About = () => {
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-6">About Modern Academy</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-6">About Panchjanya Sikshan Sankul</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Founded in 1970, Modern Academy has been a beacon of educational excellence, 
+            Founded in 2024, Panchjanya Sikshan Sankul has been a beacon of educational excellence, 
             nurturing young minds and shaping future leaders for over five decades.
           </p>
         </div>

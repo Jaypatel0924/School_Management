@@ -6,7 +6,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([
     {
       type: 'bot',
-      content: 'Hello! I\'m your Modern Academy assistant. How can I help you today?',
+      content: 'Hello! I\'m your Panchjanya Sikshan Sankul assistant. How can I help you today?',
       options: [
         'Admission Process',
         'Fee Structure',
@@ -96,7 +96,7 @@ const Chatbot = () => {
           <div className="bg-indigo-600 text-white p-4 rounded-t-2xl flex justify-between items-center">
             <div className="flex items-center space-x-2">
               <Bot className="h-6 w-6" />
-              <h3 className="font-semibold">Modern Academy Assistant</h3>
+              <h3 className="font-semibold">Panchjanya Sikshan Sankul Assistant</h3>
             </div>
             <div className="flex items-center space-x-2">
               <button

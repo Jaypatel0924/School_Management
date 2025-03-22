@@ -16,7 +16,7 @@ const Home = () => {
       >
         <div className="absolute inset-0 bg-black bg-opacity-50" />
         <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl font-bold mb-6">Welcome to Modern Academy</h1>
+          <h1 className="text-5xl font-bold mb-6">Welcome to Panchjanya Sikshan Sankul</h1>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Empowering minds, shaping futures, and building tomorrow's leaders through excellence in education.
           </p>
@@ -95,7 +95,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Join Our Community?</h2>
           <p className="text-xl mb-8">
-            Take the first step towards a bright future with Modern Academy.
+            Take the first step towards a bright future with Panchjanya Sikshan Sankul.
           </p>
           <div className="space-x-4">
             <Link

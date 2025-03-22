@@ -18,7 +18,7 @@ const Footer = () => {
           <div>
             <Link to="/" className="flex items-center">
               <GraduationCap className="h-8 w-8 text-indigo-400" />
-              <span className="ml-2 text-xl font-bold">Modern Academy</span>
+              <span className="ml-2 text-xl font-bold">Panchjanya Sikshan Sankul</span>
             </Link>
             <p className="mt-4 text-gray-400">
               Empowering minds, shaping futures, and building tomorrow's leaders
@@ -63,15 +63,16 @@ const Footer = () => {
             <ul className="space-y-2">
               <li className="flex items-center text-gray-400">
                 <Phone className="h-4 w-4 mr-2" />
-                <span>+1 (555) 123-4567</span>
+                <span> +91 9978997826</span>
               </li>
               <li className="flex items-center text-gray-400">
                 <Mail className="h-4 w-4 mr-2" />
-                <span>info@modernacademy.edu</span>
+                <span>schoolpanchjanya@gmail.com</span>
               </li>
               <li className="flex items-center text-gray-400">
                 <MapPin className="h-4 w-4 mr-2" />
-                <span>123 Education Ave, Learning City</span>
+                <span>Vadthal, Taluka Mahudha,<br></br>
+                District Kheda, 387335</span>
               </li>
             </ul>
           </div>
@@ -79,13 +80,13 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="https://www.facebook.com/share/1FVB5H7PPR/" className="text-gray-400 hover:text-white">
                 <Facebook className="h-6 w-6" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="https://x.com/pis_kheda" className="text-gray-400 hover:text-white">
                 <Twitter className="h-6 w-6" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="https://www.instagram.com/pis_kheda?igsh=MWNyYjd2Y2hzbHhkcw==" className="text-gray-400 hover:text-white">
                 <Instagram className="h-6 w-6" />
               </a>
             </div>
@@ -94,7 +95,7 @@ const Footer = () => {
 
         <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
           <p>
-            &copy; {new Date().getFullYear()} Modern Academy. All rights
+            &copy; {new Date().getFullYear()} Panchjanya sikshan sankul. All rights
             reserved.
           </p>
         </div>
