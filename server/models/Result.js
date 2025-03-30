@@ -6,11 +6,11 @@ const resultSchema = new mongoose.Schema({
     ref: 'Student',
     required: true
   },
-  exam: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Exam',
-    required: true
-  },
+  // exam: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Exam',
+  //   required: true
+  // },
   marks: {
     type: Number,
     required: [true, 'Please provide marks']

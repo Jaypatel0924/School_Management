@@ -3,7 +3,8 @@ import {
   createSchedule,
   getMySchedule,
   updateSchedule,
-  deleteSchedule
+  deleteSchedule,
+  getStudentSchedule,
 } from '../controllers/scheduleController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
 
@@ -15,11 +16,14 @@ router.use(protect);
 // Routes for teachers
 router.route('/')
   .post(restrictTo('teacher'), createSchedule)
-  .get(restrictTo('teacher'), getMySchedule)
-  .get(restrictTo('student'), getMySchedule); // My change
+  .get(restrictTo('teacher','student'), getMySchedule)
+ 
 
 router.route('/:id')
   .patch(restrictTo('teacher'), updateSchedule)
   .delete(restrictTo('teacher'), deleteSchedule);
+
+router.route('/student-schedule')
+  .get(restrictTo('student'), getStudentSchedule);
 
 export default router;

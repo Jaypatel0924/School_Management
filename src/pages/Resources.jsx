@@ -131,7 +131,7 @@
 // export default Resources;
 
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Download, FileText, Video, Book, Search, Filter } from 'lucide-react';
+import { BookOpen, Download, FileText, Video, Book, Search, Filter,Trash2 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
@@ -161,6 +161,17 @@ const Resources = () => {
     }
   };
 
+  const handleDeleteMaterial = async (id) => {
+    if (window.confirm('Are you sure you want to delete this Material?')) {
+      try {
+        await axios.delete(`http://localhost:5000/api/materials/${id}`);
+        toast.success('Material deleted successfully');
+      } catch (error) {
+        toast.error('Failed to delete Material or You have not a rights to delete Material');
+      }
+    }
+  };
+
   const getIcon = (type) => {
     switch (type) {
       case 'Notes':
@@ -176,8 +187,8 @@ const Resources = () => {
 
   const filteredMaterials = materials.filter(material => {
     const matchesSearch = material.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         material.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         material.subject.toLowerCase().includes(searchTerm.toLowerCase());
+      material.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      material.subject.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = selectedType === 'All' || material.type === selectedType;
     const matchesSubject = selectedSubject === 'All' || material.subject === selectedSubject;
     return matchesSearch && matchesType && matchesSubject;
@@ -268,12 +279,22 @@ const Resources = () => {
                     <Download className="h-5 w-5 mr-2" />
                     Download Material
                   </a>
+                  <button
+                    onClick={() => handleDeleteMaterial(material._id)}
+                    className="btn-primary w-full flex items-center justify-center mt-5"
+                  >
+                    <Trash2 className="h-5 w-5 mr-2" />
+                    Delete Material
+                  </button> 
+                  {/* // My Change */}
                 </div>
+               
               </div>
             ))}
+           
           </div>
         )}
-        
+
         {!loading && filteredMaterials.length === 0 && (
           <div className="text-center py-12">
             <Book className="h-12 w-12 text-gray-400 mx-auto mb-4" />

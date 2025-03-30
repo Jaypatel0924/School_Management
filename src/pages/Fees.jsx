@@ -353,7 +353,7 @@ const Fees = () => {
   const fetchFees = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/fees/my-fees');
+      const response = await axios.get('http://localhost:5000/api/fees/my-fees');
       setFees(response.data.data.fees);
       setStatistics(response.data.data.statistics);
     } catch (error) {
@@ -368,7 +368,7 @@ const Fees = () => {
       setLoading(true);
       
       // Create Razorpay order
-      const orderResponse = await axios.post('/api/fees/create-payment', { feeId });
+      const orderResponse = await axios.post('http://localhost:5000/api/fees/create-payment', { feeId });
       const order = orderResponse.data.data.order;
 
       const options = {
@@ -381,7 +381,7 @@ const Fees = () => {
         handler: async (response) => {
           try {
             // Verify payment
-            await axios.post('/api/fees/verify-payment', {
+            await axios.post('http://localhost:5000/api/fees/verify-payment', {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,

@@ -55,6 +55,7 @@ export const getMySchedule = async (req, res) => {
   try {
     // Find the teacher profile for the logged in user
     const teacher = await Teacher.findOne({ userId: req.user.id });
+    // const student = await student.findOne({ userId: req.user.id });
     if (!teacher) {
       return res.status(404).json({
         status: 'error',
@@ -64,6 +65,7 @@ export const getMySchedule = async (req, res) => {
 
     const schedules = await Schedule.find({ teacher: teacher._id })
       .sort({ date: 1, startTime: 1 });
+    
 
     res.status(200).json({
       status: 'success',
@@ -152,6 +154,43 @@ export const deleteSchedule = async (req, res) => {
     res.status(204).json({
       status: 'success',
       data: null
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+
+// My Change
+export const getStudentSchedule = async (req, res) => {
+  try {
+    // Find the student profile for the logged in user
+    const student = await Student.findOne({ userId: req.user.id });
+    
+    if (!student) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Student profile not found'
+      });
+    }
+
+    // Get schedules for the student's grade and section
+    const schedules = await Schedule.find({ 
+      grade: student.grade,
+      section: student.section
+    })
+    .sort({ date: 1, startTime: 1 })
+    .populate('teacher', 'name email'); // Include teacher info
+
+    res.status(200).json({
+      status: 'success',
+      results: schedules.length,
+      data: {
+        schedules
+      }
     });
   } catch (error) {
     res.status(400).json({
