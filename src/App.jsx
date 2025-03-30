@@ -43,34 +43,36 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar />
-      <main className="flex-grow">
+      <div className="fixed top-0 w-full z-50 bg-white shadow-md">
+        <Navbar />
+      </div>
+      <main className="flex-grow mt-16">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/admissions" element={<Admissions />} />
-          <Route 
-            path="/results" 
+          <Route
+            path="/results"
             element={
               <ProtectedRoute>
                 <Results />
               </ProtectedRoute>
-            } 
+            }
           />
           <Route path="/faculty" element={<Faculty />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/contact" element={<Contact />} />
-          <Route 
-            path="/fees" 
+          <Route
+            path="/fees"
             element={
               <ProtectedRoute>
                 <Fees />
               </ProtectedRoute>
-            } 
+            }
           />
           <Route path="/calendar" element={<Calendar />} />
-          
+
           {/* Auth Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

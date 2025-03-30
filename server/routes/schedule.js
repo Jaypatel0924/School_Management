@@ -15,7 +15,8 @@ router.use(protect);
 // Routes for teachers
 router.route('/')
   .post(restrictTo('teacher'), createSchedule)
-  .get(restrictTo('teacher'), getMySchedule);
+  .get(restrictTo('teacher'), getMySchedule)
+  .get(restrictTo('student'), getMySchedule); // My change
 
 router.route('/:id')
   .patch(restrictTo('teacher'), updateSchedule)

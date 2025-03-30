@@ -1,7 +1,7 @@
 import Fee from '../models/Fee.js';
 import Student from '../models/Student.js';
 
-// Create fee record
+ // Create fee record
 export const createFeeRecord = async (req, res) => {
   try {
     const {
@@ -13,7 +13,7 @@ export const createFeeRecord = async (req, res) => {
       term
     } = req.body;
 
-    // Check if student exists
+//     // Check if student exists
     const student = await Student.findById(studentId);
     if (!student) {
       return res.status(404).json({
@@ -22,7 +22,7 @@ export const createFeeRecord = async (req, res) => {
       });
     }
 
-    // Check if fee record already exists for this student, fee type, academic year and term
+//     // Check if fee record already exists for this student, fee type, academic year and term
     const existingFee = await Fee.findOne({
       student: studentId,
       feeType,
@@ -61,7 +61,7 @@ export const createFeeRecord = async (req, res) => {
   }
 };
 
-// Update fee record
+// // Update fee record
 export const updateFeeRecord = async (req, res) => {
   try {
     const feeId = req.params.id;
@@ -101,7 +101,7 @@ export const updateFeeRecord = async (req, res) => {
   }
 };
 
-// Record fee payment
+// // Record fee payment
 export const recordFeePayment = async (req, res) => {
   try {
     const feeId = req.params.id;
@@ -138,7 +138,7 @@ export const recordFeePayment = async (req, res) => {
   }
 };
 
-// Get all fee records
+// // Get all fee records
 export const getAllFeeRecords = async (req, res) => {
   try {
     const { status, feeType, academicYear, term } = req.query;
@@ -170,7 +170,7 @@ export const getAllFeeRecords = async (req, res) => {
   }
 };
 
-// Get fee records by student
+// // Get fee records by student
 export const getStudentFeeRecords = async (req, res) => {
   try {
     const { studentId } = req.params;
@@ -220,7 +220,7 @@ export const getStudentFeeRecords = async (req, res) => {
   }
 };
 
-// Get my fee records (for logged in student)
+// // Get my fee records (for logged in student)
 export const getMyFeeRecords = async (req, res) => {
   try {
     // Find the student profile for the logged in user
@@ -267,3 +267,313 @@ export const getMyFeeRecords = async (req, res) => {
     });
   }
 };
+
+// import Fee from '../models/Fee.js';
+// import Student from '../models/Student.js';
+// import Razorpay from 'razorpay';
+// import crypto from 'crypto';
+
+// const razorpay = new Razorpay({
+//   key_id: process.env.RAZORPAY_KEY_ID,
+//   key_secret: process.env.RAZORPAY_KEY_SECRET,
+// });
+
+// // Create fee record
+// export const createFeeRecord = async (req, res) => {
+//   try {
+//     const { studentId, feeType, amount, dueDate, academicYear, term } =
+//       req.body;
+
+//     // Check if student exists
+//     const student = await Student.findById(studentId);
+//     if (!student) {
+//       return res.status(404).json({
+//         status: 'error',
+//         message: 'Student not found',
+//       });
+//     }
+
+//     // Check if fee record already exists for this student, fee type, academic year and term
+//     const existingFee = await Fee.findOne({
+//       student: studentId,
+//       feeType,
+//       academicYear,
+//       term,
+//     });
+
+//     if (existingFee) {
+//       return res.status(400).json({
+//         status: 'error',
+//         message:
+//           'Fee record already exists for this student, fee type, academic year and term',
+//       });
+//     }
+
+//     const newFee = await Fee.create({
+//       student: studentId,
+//       feeType,
+//       amount,
+//       dueDate: new Date(dueDate),
+//       academicYear,
+//       term,
+//       createdBy: req.user.id,
+//     });
+
+//     res.status(201).json({
+//       status: 'success',
+//       data: {
+//         fee: newFee,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // Update fee record
+// export const updateFeeRecord = async (req, res) => {
+//   try {
+//     const feeId = req.params.id;
+//     const updateData = req.body;
+
+//     // Add updatedBy and updatedAt
+//     updateData.updatedBy = req.user.id;
+//     updateData.updatedAt = Date.now();
+
+//     const updatedFee = await Fee.findByIdAndUpdate(feeId, updateData, {
+//       new: true,
+//       runValidators: true,
+//     });
+
+//     if (!updatedFee) {
+//       return res.status(404).json({
+//         status: 'error',
+//         message: 'Fee record not found',
+//       });
+//     }
+
+//     res.status(200).json({
+//       status: 'success',
+//       data: {
+//         fee: updatedFee,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // Create Razorpay order
+// export const createPaymentOrder = async (req, res) => {
+//   try {
+//     const { feeId } = req.body;
+
+//     const fee = await Fee.findById(feeId);
+//     if (!fee) {
+//       return res.status(404).json({
+//         status: 'error',
+//         message: 'Fee record not found',
+//       });
+//     }
+
+//     const options = {
+//       amount: fee.amount * 100, // Convert to paise
+//       currency: 'INR',
+//       receipt: `fee_${fee._id}`,
+//     };
+
+//     const order = await razorpay.orders.create(options);
+
+//     res.status(200).json({
+//       status: 'success',
+//       data: {
+//         order,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // Verify payment
+// export const verifyPayment = async (req, res) => {
+//   try {
+//     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, feeId } = req.body;
+
+//     const sign = razorpay_order_id + '|' + razorpay_payment_id;
+//     const expectedSign = crypto
+//       .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+//       .update(sign)
+//       .digest('hex');
+
+//     if (razorpay_signature !== expectedSign) {
+//       return res.status(400).json({
+//         status: 'error',
+//         message: 'Invalid payment signature',
+//       });
+//     }
+
+//     // Update fee status
+//     const fee = await Fee.findByIdAndUpdate(
+//       feeId,
+//       {
+//         status: 'Paid',
+//         paymentDate: Date.now(),
+//         paymentMethod: 'Online Payment',
+//         transactionId: razorpay_payment_id,
+//         updatedBy: req.user.id,
+//         updatedAt: Date.now(),
+//       },
+//       { new: true }
+//     );
+
+//     res.status(200).json({
+//       status: 'success',
+//       data: {
+//         fee,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // Get all fee records
+// export const getAllFeeRecords = async (req, res) => {
+//   try {
+//     const { status, feeType, academicYear, term } = req.query;
+
+//     const filter = {};
+//     if (status) filter.status = status;
+//     if (feeType) filter.feeType = feeType;
+//     if (academicYear) filter.academicYear = academicYear;
+//     if (term) filter.term = term;
+
+//     const fees = await Fee.find(filter)
+//       .populate('student', 'name rollNumber grade section')
+//       .populate('createdBy', 'name')
+//       .populate('updatedBy', 'name')
+//       .sort({ dueDate: 1 });
+
+//     res.status(200).json({
+//       status: 'success',
+//       results: fees.length,
+//       data: {
+//         fees,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // Get fee records by student
+// export const getStudentFeeRecords = async (req, res) => {
+//   try {
+//     const { studentId } = req.params;
+
+//     // Check if student exists
+//     const student = await Student.findById(studentId);
+//     if (!student) {
+//       return res.status(404).json({
+//         status: 'error',
+//         message: 'Student not found',
+//       });
+//     }
+
+//     const fees = await Fee.find({ student: studentId }).sort({ dueDate: 1 });
+
+//     // Calculate fee statistics
+//     const totalFees = fees.reduce((sum, fee) => sum + fee.amount, 0);
+//     const paidFees = fees
+//       .filter((fee) => fee.status === 'Paid')
+//       .reduce((sum, fee) => sum + fee.amount, 0);
+//     const pendingFees = fees
+//       .filter((fee) => fee.status === 'Pending')
+//       .reduce((sum, fee) => sum + fee.amount, 0);
+//     const overdueFees = fees
+//       .filter((fee) => fee.status === 'Overdue')
+//       .reduce((sum, fee) => sum + fee.amount, 0);
+
+//     res.status(200).json({
+//       status: 'success',
+//       data: {
+//         fees,
+//         statistics: {
+//           totalFees,
+//           paidFees,
+//           pendingFees,
+//           overdueFees,
+//           paymentPercentage: totalFees > 0 ? (paidFees / totalFees) * 100 : 0,
+//         },
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // Get my fee records (for logged in student)
+// export const getMyFeeRecords = async (req, res) => {
+//   try {
+//     // Find the student profile for the logged in user
+//     const student = await Student.findOne({ userId: req.user.id });
+//     if (!student) {
+//       return res.status(404).json({
+//         status: 'error',
+//         message: 'Student profile not found',
+//       });
+//     }
+
+//     const fees = await Fee.find({ student: student._id }).sort({ dueDate: 1 });
+
+//     // Calculate fee statistics
+//     const totalFees = fees.reduce((sum, fee) => sum + fee.amount, 0);
+//     const paidFees = fees
+//       .filter((fee) => fee.status === 'Paid')
+//       .reduce((sum, fee) => sum + fee.amount, 0);
+//     const pendingFees = fees
+//       .filter((fee) => fee.status === 'Pending')
+//       .reduce((sum, fee) => sum + fee.amount, 0);
+//     const overdueFees = fees
+//       .filter((fee) => fee.status === 'Overdue')
+//       .reduce((sum, fee) => sum + fee.amount, 0);
+
+//     res.status(200).json({
+//       status: 'success',
+//       data: {
+//         fees,
+//         statistics: {
+//           totalFees,
+//           paidFees,
+//           pendingFees,
+//           overdueFees,
+//           paymentPercentage: totalFees > 0 ? (paidFees / totalFees) * 100 : 0,
+//         },
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };

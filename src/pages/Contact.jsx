@@ -1,3 +1,124 @@
+// // import React from 'react';
+// // import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
+// // import toast from 'react-hot-toast';
+
+// // const Contact = () => {
+// //   const handleSubmit = (e) => {
+// //     e.preventDefault();
+// //     toast.success('Message sent successfully! We will get back to you soon.');
+// //   };
+
+// //   return (
+// //     <div className="space-y-16 py-8">
+// //       {/* Header */}
+// //       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+// //         <h1 className="text-4xl font-bold text-gray-900 mb-6">Contact Us</h1>
+// //         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+// //           Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+// //         </p>
+// //       </section>
+
+// //       {/* Contact Information */}
+// //       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+// //         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+// //           <div className="bg-white p-6 rounded-lg shadow-lg">
+// //             <Phone className="h-8 w-8 text-indigo-600 mb-4" />
+// //             <h3 className="text-xl font-semibold mb-2">Phone</h3>
+// //             <p className="text-gray-600">Main: +1 (555) 123-4567</p>
+// //             <p className="text-gray-600">Admissions: +1 (555) 234-5678</p>
+// //           </div>
+// //           <div className="bg-white p-6 rounded-lg shadow-lg">
+// //             <Mail className="h-8 w-8 text-indigo-600 mb-4" />
+// //             <h3 className="text-xl font-semibold mb-2">Email</h3>
+// //             <p className="text-gray-600">info@modernacademy.edu</p>
+// //             <p className="text-gray-600">admissions@modernacademy.edu</p>
+// //           </div>
+// //           <div className="bg-white p-6 rounded-lg shadow-lg">
+// //             <Clock className="h-8 w-8 text-indigo-600 mb-4" />
+// //             <h3 className="text-xl font-semibold mb-2">Office Hours</h3>
+// //             <p className="text-gray-600">Monday - Friday: 8:00 AM - 4:00 PM</p>
+// //             <p className="text-gray-600">Saturday: 9:00 AM - 1:00 PM</p>
+// //           </div>
+// //         </div>
+// //       </section>
+
+// //       {/* Contact Form & Map */}
+// //       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+// //         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+// //           {/* Contact Form */}
+// //           <div className="bg-white p-8 rounded-lg shadow-lg">
+// //             <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
+// //             <form onSubmit={handleSubmit} className="space-y-6">
+// //               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+// //                 <div>
+// //                   <label className="block text-sm font-medium text-gray-700 mb-2">
+// //                     First Name
+// //                   </label>
+// //                   <input type="text" className="input-field" required />
+// //                 </div>
+// //                 <div>
+// //                   <label className="block text-sm font-medium text-gray-700 mb-2">
+// //                     Last Name
+// //                   </label>
+// //                   <input type="text" className="input-field" required />
+// //                 </div>
+// //               </div>
+// //               <div>
+// //                 <label className="block text-sm font-medium text-gray-700 mb-2">
+// //                   Email
+// //                 </label>
+// //                 <input type="email" className="input-field" required />
+// //               </div>
+// //               <div>
+// //                 <label className="block text-sm font-medium text-gray-700 mb-2">
+// //                   Subject
+// //                 </label>
+// //                 <input type="text" className="input-field" required />
+// //               </div>
+// //               <div>
+// //                 <label className="block text-sm font-medium text-gray-700 mb-2">
+// //                   Message
+// //                 </label>
+// //                 <textarea className="input-field" rows={4} required></textarea>
+// //               </div>
+// //               <button type="submit" className="btn-primary w-full flex items-center justify-center">
+// //                 <Send className="h-4 w-4 mr-2" />
+// //                 Send Message
+// //               </button>
+// //             </form>
+// //           </div>
+
+// //           {/* Location */}
+// //           <div className="bg-white p-8 rounded-lg shadow-lg">
+// //             <h2 className="text-2xl font-bold mb-6">Our Location</h2>
+// //             <div className="aspect-w-16 aspect-h-9 mb-6">
+// //               <iframe
+// //                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.30596073366!2d-74.25987368715491!3d40.69714941932609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1647043435129!5m2!1sen!2s"
+// //                 className="w-full h-[300px] rounded-lg"
+// //                 style={{ border: 0 }}
+// //                 allowFullScreen
+// //                 loading="lazy"
+// //               ></iframe>
+// //             </div>
+// //             <div className="flex items-start space-x-4">
+// //               <MapPin className="h-6 w-6 text-indigo-600 flex-shrink-0 mt-1" />
+// //               <div>
+// //                 <h3 className="font-semibold mb-2">Panchjanya Sikshan Sankul Campus</h3>
+// //                 <p className="text-gray-600">
+// //                   123 Education Avenue<br />
+// //                   Learning City, NY 10001<br />
+// //                   United States
+// //                 </p>
+// //               </div>
+// //             </div>
+// //           </div>
+// //         </div>
+// //       </section>
+// //     </div>
+// //   );
+// // };
+
+// // export default Contact;
 // import React from 'react';
 // import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
 // import toast from 'react-hot-toast';
@@ -24,20 +145,20 @@
 //           <div className="bg-white p-6 rounded-lg shadow-lg">
 //             <Phone className="h-8 w-8 text-indigo-600 mb-4" />
 //             <h3 className="text-xl font-semibold mb-2">Phone</h3>
-//             <p className="text-gray-600">Main: +1 (555) 123-4567</p>
-//             <p className="text-gray-600">Admissions: +1 (555) 234-5678</p>
+//             <p className="text-gray-600">Main: +91 9978997826</p>
+//             {/* <p className="text-gray-600">Admissions: +1 (555) 234-5678</p> */}
 //           </div>
 //           <div className="bg-white p-6 rounded-lg shadow-lg">
 //             <Mail className="h-8 w-8 text-indigo-600 mb-4" />
 //             <h3 className="text-xl font-semibold mb-2">Email</h3>
-//             <p className="text-gray-600">info@modernacademy.edu</p>
-//             <p className="text-gray-600">admissions@modernacademy.edu</p>
+//             <p className="text-gray-600">schoolpanchjanya@gmail.com</p>
+//             {/* <p className="text-gray-600">admissions@modernacademy.edu</p> */}
 //           </div>
 //           <div className="bg-white p-6 rounded-lg shadow-lg">
 //             <Clock className="h-8 w-8 text-indigo-600 mb-4" />
 //             <h3 className="text-xl font-semibold mb-2">Office Hours</h3>
-//             <p className="text-gray-600">Monday - Friday: 8:00 AM - 4:00 PM</p>
-//             <p className="text-gray-600">Saturday: 9:00 AM - 1:00 PM</p>
+//             <p className="text-gray-600">Monday - Saturday: 7:00 am To 4:00 pm</p>
+//             {/* <p className="text-gray-600">Saturday: 9:00 AM - 1:00 PM</p> */}
 //           </div>
 //         </div>
 //       </section>
@@ -93,7 +214,7 @@
 //             <h2 className="text-2xl font-bold mb-6">Our Location</h2>
 //             <div className="aspect-w-16 aspect-h-9 mb-6">
 //               <iframe
-//                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.30596073366!2d-74.25987368715491!3d40.69714941932609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1647043435129!5m2!1sen!2s"
+//                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9216.760377487606!2d72.94689262695294!3d22.8572447065218!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e69001daaccf9%3A0x62ab8d13209acec5!2zUGFuY2hqYW55IEludGVybmF0aW9uYWwgU2Nob29sICYg4Kqq4KqC4Kqa4Kqc4Kqo4KuN4KqvIOCqtuCqv-CqleCrjeCqt-CqoyDgqrjgqoLgqpXgq4HgqrI!5e0!3m2!1sen!2sin!4v1738407265746!5m2!1sen!2sin"
 //                 className="w-full h-[300px] rounded-lg"
 //                 style={{ border: 0 }}
 //                 allowFullScreen
@@ -103,11 +224,10 @@
 //             <div className="flex items-start space-x-4">
 //               <MapPin className="h-6 w-6 text-indigo-600 flex-shrink-0 mt-1" />
 //               <div>
-//                 <h3 className="font-semibold mb-2">Panchjanya Sikshan Sankul Campus</h3>
+//                 <h3 className="font-semibold mb-2">Panchjanya sikshan sankul</h3>
 //                 <p className="text-gray-600">
-//                   123 Education Avenue<br />
-//                   Learning City, NY 10001<br />
-//                   United States
+//                   Vadthal, Taluka Mahudha,
+//                   District Kheda, 387335
 //                 </p>
 //               </div>
 //             </div>
@@ -115,18 +235,54 @@
 //         </div>
 //       </section>
 //     </div>
+
 //   );
 // };
 
 // export default Contact;
-import React from 'react';
-import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
+
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const Contact = () => {
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success('Message sent successfully! We will get back to you soon.');
+    try {
+      setLoading(true);
+      await axios.post('http://localhost:5000/api/contacts', formData);
+      setSubmitted(true);
+      toast.success('Message sent successfully!');
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to send message');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -145,20 +301,20 @@ const Contact = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <Phone className="h-8 w-8 text-indigo-600 mb-4" />
             <h3 className="text-xl font-semibold mb-2">Phone</h3>
-            <p className="text-gray-600">Main: +91 9978997826</p>
-            {/* <p className="text-gray-600">Admissions: +1 (555) 234-5678</p> */}
+            <p className="text-gray-600">Main: +1 (555) 123-4567</p>
+            <p className="text-gray-600">Admissions: +1 (555) 234-5678</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <Mail className="h-8 w-8 text-indigo-600 mb-4" />
             <h3 className="text-xl font-semibold mb-2">Email</h3>
-            <p className="text-gray-600">schoolpanchjanya@gmail.com</p>
-            {/* <p className="text-gray-600">admissions@modernacademy.edu</p> */}
+            <p className="text-gray-600">info@modernacademy.edu</p>
+            <p className="text-gray-600">admissions@modernacademy.edu</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <Clock className="h-8 w-8 text-indigo-600 mb-4" />
             <h3 className="text-xl font-semibold mb-2">Office Hours</h3>
-            <p className="text-gray-600">Monday - Saturday: 7:00 am To 4:00 pm</p>
-            {/* <p className="text-gray-600">Saturday: 9:00 AM - 1:00 PM</p> */}
+            <p className="text-gray-600">Monday - Friday: 8:00 AM - 4:00 PM</p>
+            <p className="text-gray-600">Saturday: 9:00 AM - 1:00 PM</p>
           </div>
         </div>
       </section>
@@ -168,45 +324,102 @@ const Contact = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Contact Form */}
           <div className="bg-white p-8 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    First Name
-                  </label>
-                  <input type="text" className="input-field" required />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Last Name
-                  </label>
-                  <input type="text" className="input-field" required />
-                </div>
+            {submitted ? (
+              <div className="text-center">
+                <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Message Sent!</h2>
+                <p className="text-gray-600 mb-6">
+                  Thank you for contacting us. We will get back to you soon.
+                </p>
+                <button
+                  onClick={() => setSubmitted(false)}
+                  className="btn-primary"
+                >
+                  Send Another Message
+                </button>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email
-                </label>
-                <input type="email" className="input-field" required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject
-                </label>
-                <input type="text" className="input-field" required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Message
-                </label>
-                <textarea className="input-field" rows={4} required></textarea>
-              </div>
-              <button type="submit" className="btn-primary w-full flex items-center justify-center">
-                <Send className="h-4 w-4 mr-2" />
-                Send Message
-              </button>
-            </form>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className="input-field"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className="input-field"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="input-field"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      className="input-field"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Message
+                    </label>
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      className="input-field"
+                      rows={4}
+                      required
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="btn-primary w-full flex items-center justify-center"
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    {loading ? 'Sending...' : 'Send Message'}
+                  </button>
+                </form>
+              </>
+            )}
           </div>
 
           {/* Location */}
@@ -214,7 +427,7 @@ const Contact = () => {
             <h2 className="text-2xl font-bold mb-6">Our Location</h2>
             <div className="aspect-w-16 aspect-h-9 mb-6">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9216.760377487606!2d72.94689262695294!3d22.8572447065218!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e69001daaccf9%3A0x62ab8d13209acec5!2zUGFuY2hqYW55IEludGVybmF0aW9uYWwgU2Nob29sICYg4Kqq4KqC4Kqa4Kqc4Kqo4KuN4KqvIOCqtuCqv-CqleCrjeCqt-CqoyDgqrjgqoLgqpXgq4HgqrI!5e0!3m2!1sen!2sin!4v1738407265746!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.30596073366!2d-74.25987368715491!3d40.69714941932609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1647043435129!5m2!1sen!2s"
                 className="w-full h-[300px] rounded-lg"
                 style={{ border: 0 }}
                 allowFullScreen
@@ -224,10 +437,11 @@ const Contact = () => {
             <div className="flex items-start space-x-4">
               <MapPin className="h-6 w-6 text-indigo-600 flex-shrink-0 mt-1" />
               <div>
-                <h3 className="font-semibold mb-2">Panchjanya sikshan sankul</h3>
+                <h3 className="font-semibold mb-2">Modern Academy Campus</h3>
                 <p className="text-gray-600">
-                  Vadthal, Taluka Mahudha,
-                  District Kheda, 387335
+                  123 Education Avenue<br />
+                  Learning City, NY 10001<br />
+                  United States
                 </p>
               </div>
             </div>
@@ -235,7 +449,6 @@ const Contact = () => {
         </div>
       </section>
     </div>
-
   );
 };
 
