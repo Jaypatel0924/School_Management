@@ -3,7 +3,7 @@ import {
   getAllStudents, 
   // getStudentById, 
   createStudent, 
-  // updateStudent, 
+  updateStudent, 
   deleteStudent,
   // getStudentsByClass,
   // getMyProfile
@@ -16,7 +16,7 @@ const router = express.Router();
 router.use(protect);
 
 // Routes for all authenticated users
-// router.get('/me', getMyProfile);
+ //router.get('/me', getMyProfile);
 
 // Routes restricted to admin
 router.route('/')
@@ -27,7 +27,7 @@ router.route('/')
 
 router.route('/:id')
   // .get(restrictTo('admin', 'teacher'), getStudentById)
-  // .patch(restrictTo('admin'), updateStudent)
+  .put(restrictTo('admin'), updateStudent)
   .delete(restrictTo('admin'), deleteStudent);
 
 export default router;

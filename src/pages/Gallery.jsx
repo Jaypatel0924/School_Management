@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from "react";
+import { X } from "lucide-react";
 
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -7,48 +7,62 @@ const Gallery = () => {
   const images = [
     {
       id: 1,
-      url: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-      category: 'Campus',
-      title: 'Main Building'
+      url: "https://as2.ftcdn.net/v2/jpg/03/91/24/99/1000_F_391249999_rW4pdWSJcYpB3JQfG2spq7QBFjEla4vH.jpg",
+      category: "Campus",
+      title: "Main Building",
     },
     {
       id: 2,
-      url: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-      category: 'Events',
-      title: 'Annual Day Celebration'
+      url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      category: "Events",
+      title: "Annual Day Celebration",
     },
     {
       id: 3,
-      url: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-      category: 'Sports',
-      title: 'Sports Complex'
+      url: "https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      category: "Sports",
+      title: "Sports Complex",
     },
     {
       id: 4,
-      url: 'https://images.unsplash.com/photo-1558021212-51b6ecfa0db9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-      category: 'Academics',
-      title: 'Science Lab'
+      url: "https://images.unsplash.com/photo-1558021212-51b6ecfa0db9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      category: "Academics",
+      title: "Science Lab",
     },
     {
       id: 5,
-      url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-      category: 'Events',
-      title: 'Cultural Festival'
+      url: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      category: "Events",
+      title: "Cultural Festival",
     },
     {
       id: 6,
-      url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-      category: 'Library',
-      title: 'Modern Library'
-    }
+      url: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+      category: "Library",
+      title: "Panchjanya school",
+    },
+    {
+      id: 7,
+      url: "https://th.bing.com/th/id/OIP.i4NQtixflp9pzmU2cwC3DQHaE8?pid=ImgDet&w=194&h=129&c=7&dpr=1.1",
+      category: "Academics",
+      title: "Panchjanya school",
+    },
   ];
 
-  const categories = ['All', 'Campus', 'Events', 'Sports', 'Academics', 'Library'];
-  const [activeCategory, setActiveCategory] = useState('All');
+  const categories = [
+    "All",
+    "Campus",
+    "Events",
+    "Sports",
+    "Academics",
+    "Library",
+  ];
+  const [activeCategory, setActiveCategory] = useState("All");
 
-  const filteredImages = activeCategory === 'All' 
-    ? images 
-    : images.filter(img => img.category === activeCategory);
+  const filteredImages =
+    activeCategory === "All"
+      ? images
+      : images.filter((img) => img.category === activeCategory);
 
   return (
     <div className="space-y-16 py-8">
@@ -68,9 +82,10 @@ const Gallery = () => {
               key={category}
               onClick={() => setActiveCategory(category)}
               className={`px-6 py-2 rounded-full text-sm font-medium transition-colors
-                ${activeCategory === category
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ${
+                  activeCategory === category
+                    ? "bg-indigo-600 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
             >
               {category}
@@ -93,7 +108,7 @@ const Gallery = () => {
                 alt={image.title}
                 className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+              <div className="absolute inset-0  bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
                 <div className="p-4 w-full text-white">
                   <p className="text-sm font-medium">{image.category}</p>
                   <h3 className="text-lg font-semibold">{image.title}</h3>
@@ -106,7 +121,7 @@ const Gallery = () => {
 
       {/* Image Modal */}
       {selectedImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-90 p-4">
           <button
             onClick={() => setSelectedImage(null)}
             className="absolute top-4 right-4 text-white hover:text-gray-300"

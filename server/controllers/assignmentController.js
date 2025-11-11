@@ -1,6 +1,9 @@
 import Assignment from '../models/Assignment.js';
 import Teacher from '../models/Teacher.js';
+import Student from '../models/Student.js';
 import Submission from '../models/Submission.js';
+import Notification from '../models/Notification.js';
+import { sendAssignmentReminder } from '../utils/email.js';
 
 // Create new assignment
 export const createAssignment = async (req, res) => {
@@ -26,6 +29,13 @@ export const createAssignment = async (req, res) => {
       });
     }
 
+    // If a file was uploaded via multer, construct an attachment URL
+    let finalAttachmentUrl = attachmentUrl;
+    if (req.file) {
+      const host = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
+      finalAttachmentUrl = `${host}/uploads/${req.file.filename}`;
+    }
+
     const newAssignment = await Assignment.create({
       title,
       description,
@@ -34,7 +44,7 @@ export const createAssignment = async (req, res) => {
       section,
       dueDate: new Date(dueDate),
       maxMarks,
-      attachmentUrl,
+      attachmentUrl: finalAttachmentUrl,
       teacher: teacher._id
     });
     
@@ -52,7 +62,7 @@ export const createAssignment = async (req, res) => {
   }
 };
 
-// Get all assignments
+// Get assignments based on user role
 export const getAllAssignments = async (req, res) => {
   try {
     const { grade, section, subject } = req.query;
@@ -61,6 +71,19 @@ export const getAllAssignments = async (req, res) => {
     if (grade) filter.grade = grade;
     if (section) filter.section = section;
     if (subject) filter.subject = subject;
+
+    // If user is a student, only show assignments for their grade and section
+    if (req.user.role === 'student') {
+      const student = await Student.findOne({ userId: req.user.id });
+      if (!student) {
+        return res.status(404).json({
+          status: 'error',
+          message: 'Student profile not found'
+        });
+      }
+      filter.grade = student.grade;
+      filter.section = student.section;
+    }
     
     const assignments = await Assignment.find(filter)
       .populate('teacher', 'name')
@@ -92,6 +115,17 @@ export const getAssignmentById = async (req, res) => {
         status: 'error',
         message: 'Assignment not found'
       });
+    }
+
+    // If user is a student, verify they can access this assignment
+    if (req.user.role === 'student') {
+      const student = await Student.findOne({ userId: req.user.id });
+      if (student.grade !== assignment.grade || student.section !== assignment.section) {
+        return res.status(403).json({
+          status: 'error',
+          message: 'You are not authorized to view this assignment'
+        });
+      }
     }
     
     res.status(200).json({
@@ -195,6 +229,56 @@ export const deleteAssignment = async (req, res) => {
   }
 };
 
+// Send reminder email to all students in the assignment's class (grade + section)
+export const sendAssignmentReminderToClass = async (req, res) => {
+  try {
+    const assignment = await Assignment.findById(req.params.id);
+
+    if (!assignment) {
+      return res.status(404).json({ status: 'error', message: 'Assignment not found' });
+    }
+
+    // Verify teacher ownership
+    const teacher = await Teacher.findOne({ userId: req.user.id });
+    if (!teacher) {
+      return res.status(404).json({ status: 'error', message: 'Teacher profile not found' });
+    }
+
+    if (assignment.teacher.toString() !== teacher._id.toString()) {
+      return res.status(403).json({ status: 'error', message: 'You are not authorized to send reminders for this assignment' });
+    }
+
+    // Find students for this grade/section
+    const students = await Student.find({ grade: assignment.grade, section: assignment.section });
+
+    const assignmentLink = `${process.env.FRONTEND_URL || ''}/assignments/${assignment._id}`;
+
+    // Send email & create notification for each student (don't await all sequentially)
+    const sendPromises = students.map(async (student) => {
+      try {
+        await sendAssignmentReminder(student.email, student.name, assignment.title, assignment.dueDate, assignmentLink);
+
+        await Notification.create({
+          student: student._id,
+          message: `Reminder: Please complete assignment '${assignment.title}' by ${new Date(assignment.dueDate).toLocaleDateString()}`,
+          type: 'assignment',
+          date: new Date(),
+        });
+      } catch (err) {
+        // log and continue
+        console.error(`Failed to send reminder to ${student.email}:`, err.message);
+      }
+    });
+
+    await Promise.all(sendPromises);
+
+    res.status(200).json({ status: 'success', message: `Reminders sent to ${students.length} students` });
+  } catch (error) {
+    console.error('Error in sendAssignmentReminderToClass:', error);
+    res.status(500).json({ status: 'error', message: error.message });
+  }
+};
+
 // Get assignments by teacher
 export const getMyAssignments = async (req, res) => {
   try {
@@ -222,6 +306,6 @@ export const getMyAssignments = async (req, res) => {
     res.status(400).json({
       status: 'error',
       message: error.message
-    });
-  }
+    });
+  }
 };

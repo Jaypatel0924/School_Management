@@ -11,21 +11,34 @@ export const AuthProvider = ({ children }) => {
   const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
-    
-    if (token && user) {
-      const userData = JSON.parse(user);
-      setCurrentUser(userData);
-      setIsLoggedIn(true);
-      setUserRole(userData.role);
+    try {
+      // Check if user is logged in
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
       
-      // Set default authorization header for all requests
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      if (token && user) {
+        try {
+          const userData = JSON.parse(user);
+          if (userData) {
+            setCurrentUser(userData);
+            setIsLoggedIn(true);
+            setUserRole(userData.role);
+            
+            // Set default authorization header for all requests
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          }
+        } catch (parseError) {
+          // If JSON parsing fails, clear the invalid data
+          console.error('Invalid user data in localStorage:', parseError);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+      }
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   }, []);
 
   const login = async (email, password) => {
@@ -40,19 +53,29 @@ export const AuthProvider = ({ children }) => {
         const { token, data } = response.data;
         const userData = data.user;
         
-        // Store token and user data
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(userData));
-        
-        // Set default authorization header for all requests
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        
-        setCurrentUser(userData);
-        setIsLoggedIn(true);
-        setUserRole(userData.role);
-        
-        toast.success('Successfully logged in!');
-        return { success: true, userData };
+        try {
+          // Store token and user data
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(userData));
+          
+          // Set default authorization header for all requests
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          
+          setCurrentUser(userData);
+          setIsLoggedIn(true);
+          setUserRole(userData.role);
+          
+          toast.success('Successfully logged in!');
+          return { success: true, userData };
+        } catch (storageError) {
+          console.error('Failed to store auth data:', storageError);
+          // Continue with the login even if storage fails
+          setCurrentUser(userData);
+          setIsLoggedIn(true);
+          setUserRole(userData.role);
+          toast.success('Successfully logged in! (Note: Session storage unavailable)');
+          return { success: true, userData };
+        }
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed');
@@ -80,8 +103,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    try {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    } catch (error) {
+      console.error('Error clearing localStorage:', error);
+    }
     delete axios.defaults.headers.common['Authorization'];
     setCurrentUser(null);
     setIsLoggedIn(false);

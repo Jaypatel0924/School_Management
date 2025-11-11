@@ -137,7 +137,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
 const Resources = () => {
-  const { userRole } = useAuth();
+  const { userRole, currentUser } = useAuth();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -279,14 +279,16 @@ const Resources = () => {
                     <Download className="h-5 w-5 mr-2" />
                     Download Material
                   </a>
-                  <button
-                    onClick={() => handleDeleteMaterial(material._id)}
-                    className="btn-primary w-full flex items-center justify-center mt-5"
-                  >
-                    <Trash2 className="h-5 w-5 mr-2" />
-                    Delete Material
-                  </button> 
-                  {/* // My Change */}
+                  {/* Only show delete for teachers. Back-end additionally enforces ownership. */}
+                  {userRole === 'teacher' && (
+                    <button
+                      onClick={() => handleDeleteMaterial(material._id)}
+                      className="btn-primary w-full flex items-center justify-center mt-5"
+                    >
+                      <Trash2 className="h-5 w-5 mr-2" />
+                      Delete Material
+                    </button>
+                  )}
                 </div>
                
               </div>

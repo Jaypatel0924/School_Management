@@ -27,7 +27,7 @@ router.get('/subject', restrictTo('admin'), getTeachersBySubject);
 
 router.route('/:id')
   .get(restrictTo('admin'), getTeacherById)
-  .patch(restrictTo('admin'), updateTeacher)
+  .put(restrictTo('admin'), updateTeacher)
   .delete(restrictTo('admin'), deleteTeacher);
 
 export default router;

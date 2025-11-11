@@ -5,9 +5,11 @@ import {
   getAssignmentById, 
   updateAssignment, 
   deleteAssignment,
-  getMyAssignments
+  getMyAssignments,
+  sendAssignmentReminderToClass
 } from '../controllers/assignmentController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
+import upload from '../config/multer.js';
 
 const router = express.Router();
 
@@ -16,14 +18,17 @@ router.use(protect);
 
 // Routes for teachers
 router.route('/')
-  .post(restrictTo('teacher'), createAssignment)
+  .post(restrictTo('teacher'), upload.single('file'), createAssignment)
   .get(getAllAssignments);
 
 router.get('/my-assignments', restrictTo('teacher'), getMyAssignments);
 
 router.route('/:id')
   .get(getAssignmentById)
-  .patch(restrictTo('teacher'), updateAssignment)
+  .put(restrictTo('teacher'), updateAssignment)
   .delete(restrictTo('teacher'), deleteAssignment);
+
+// Send reminder to class for a specific assignment
+router.post('/:id/send-reminder', restrictTo('teacher'), sendAssignmentReminderToClass);
 
 export default router;

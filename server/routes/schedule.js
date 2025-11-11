@@ -4,7 +4,7 @@ import {
   getMySchedule,
   updateSchedule,
   deleteSchedule,
-  getStudentSchedule,
+  getStudentSchedule
 } from '../controllers/scheduleController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
 
@@ -16,14 +16,13 @@ router.use(protect);
 // Routes for teachers
 router.route('/')
   .post(restrictTo('teacher'), createSchedule)
-  .get(restrictTo('teacher','student'), getMySchedule)
- 
+  .get(restrictTo('teacher'), getMySchedule);
 
 router.route('/:id')
-  .patch(restrictTo('teacher'), updateSchedule)
+  .put(restrictTo('teacher'), updateSchedule)
   .delete(restrictTo('teacher'), deleteSchedule);
 
-router.route('/student-schedule')
-  .get(restrictTo('student'), getStudentSchedule);
+// Routes for students
+router.get('/student-schedule', restrictTo('student'), getStudentSchedule);
 
 export default router;

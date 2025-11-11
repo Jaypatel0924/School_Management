@@ -1,73 +1,7 @@
 import Attendance from '../models/Attendance.js';
 import Student from '../models/Student.js';
 import Teacher from '../models/Teacher.js';
-
-// Mark attendance
-export const markAttendance = async (req, res) => {
-  try {
-    const { studentId, date, status, grade, section } = req.body;
-
-    // Check if student exists
-    const student = await Student.findById(studentId);
-    if (!student) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'Student not found'
-      });
-    }
-
-    // Find the teacher profile for the logged in user
-    const teacher = await Teacher.findOne({ userId: req.user.id });
-    if (!teacher) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'Teacher profile not found'
-      });
-    }
-
-    // Check if attendance already exists for this student on this date
-    const existingAttendance = await Attendance.findOne({
-      student: studentId,
-      date: new Date(date)
-    });
-
-    if (existingAttendance) {
-      // Update existing attendance
-      existingAttendance.status = status;
-      existingAttendance.markedBy = teacher._id;
-      await existingAttendance.save();
-
-      return res.status(200).json({
-        status: 'success',
-        data: {
-          attendance: existingAttendance
-        }
-      });
-    }
-
-    // Create new attendance record
-    const newAttendance = await Attendance.create({
-      student: studentId,
-      date: new Date(date),
-      status,
-      grade,
-      section,
-      markedBy: teacher._id
-    });
-
-    res.status(201).json({
-      status: 'success',
-      data: {
-        attendance: newAttendance
-      }
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: 'error',
-      message: error.message
-    });
-  }
-};
+import { sendAbsenceNotification } from '../utils/email.js';
 
 // Mark bulk attendance
 export const markBulkAttendance = async (req, res) => {
@@ -79,7 +13,7 @@ export const markBulkAttendance = async (req, res) => {
     if (!teacher) {
       return res.status(404).json({
         status: 'error',
-        message: 'Teacher profile not found'
+        message: 'Teacher profile not found',
       });
     }
 
@@ -92,8 +26,11 @@ export const markBulkAttendance = async (req, res) => {
       // Check if attendance already exists for this student on this date
       const existingAttendance = await Attendance.findOne({
         student: studentId,
-        date: new Date(date)
+        date: new Date(date),
       });
+
+      // Get student details for email notification
+      const student = await Student.findById(studentId);
 
       if (existingAttendance) {
         // Update existing attendance
@@ -101,6 +38,11 @@ export const markBulkAttendance = async (req, res) => {
         existingAttendance.markedBy = teacher._id;
         await existingAttendance.save();
         results.push(existingAttendance);
+
+        // Send email if marked as absent
+        if (status === 'Absent') {
+          await sendAbsenceNotification(student.email, student.name, date);
+        }
       } else {
         // Create new attendance record
         const newAttendance = await Attendance.create({
@@ -109,9 +51,14 @@ export const markBulkAttendance = async (req, res) => {
           status,
           grade,
           section,
-          markedBy: teacher._id
+          markedBy: teacher._id,
         });
         results.push(newAttendance);
+
+        // Send email if marked as absent
+        if (status === 'Absent') {
+          await sendAbsenceNotification(student.email, student.name, date);
+        }
       }
     }
 
@@ -119,18 +66,18 @@ export const markBulkAttendance = async (req, res) => {
       status: 'success',
       results: results.length,
       data: {
-        attendanceRecords: results
-      }
+        attendanceRecords: results,
+      },
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
-      message: error.message
+      message: error.message,
     });
   }
 };
 
-// Get attendance by date, grade, and section
+// Get attendance by class
 export const getAttendanceByClass = async (req, res) => {
   try {
     const { date, grade, section } = req.query;
@@ -148,14 +95,76 @@ export const getAttendanceByClass = async (req, res) => {
       status: 'success',
       results: attendanceRecords.length,
       data: {
-        attendanceRecords
-      }
+        attendanceRecords,
+      },
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
-      message: error.message
+      message: error.message,
     });
+  }
+};
+
+// Get monthly attendance report for a class (grade + section)
+export const getMonthlyAttendanceReport = async (req, res) => {
+  try {
+    const { grade, section, year, month } = req.query;
+
+    if (!grade || !section || !year || !month) {
+      return res.status(400).json({ status: 'error', message: 'grade, section, year and month are required' });
+    }
+
+    // month: 1-12
+    const y = parseInt(year, 10);
+    const m = parseInt(month, 10);
+    if (isNaN(y) || isNaN(m) || m < 1 || m > 12) {
+      return res.status(400).json({ status: 'error', message: 'Invalid year or month' });
+    }
+
+    const startDate = new Date(y, m - 1, 1);
+    const endDate = new Date(y, m, 0); // last day of month
+
+    // Get all students in the class
+    const students = await Student.find({ grade, section }).select('name studentId _id');
+
+    // If no students found
+    if (!students || students.length === 0) {
+      return res.status(200).json({ status: 'success', results: 0, data: { report: [] } });
+    }
+
+    // Fetch attendance records for the time range and students in this class
+    const attendanceRecords = await Attendance.find({
+      student: { $in: students.map(s => s._id) },
+      date: { $gte: startDate, $lte: endDate }
+    }).lean();
+
+    // Build report per student
+    const report = students.map(student => {
+      const records = attendanceRecords.filter(r => r.student.toString() === student._id.toString());
+      const totalDaysRecorded = records.length;
+      const presentDays = records.filter(r => r.status === 'Present').length;
+      const absentDays = records.filter(r => r.status === 'Absent').length;
+
+      // If some days have no records, they are considered 'Not marked' and do not count towards present/absent totals.
+
+      const attendancePercentage = totalDaysRecorded > 0 ? (presentDays / totalDaysRecorded) * 100 : 0;
+
+      return {
+        studentId: student.studentId,
+        studentName: student.name,
+        studentRef: student._id,
+        totalDaysRecorded,
+        presentDays,
+        absentDays,
+        attendancePercentage: attendancePercentage.toFixed(2)
+      };
+    });
+
+    res.status(200).json({ status: 'success', results: report.length, data: { report } });
+  } catch (error) {
+    console.error('Monthly attendance report error:', error);
+    res.status(400).json({ status: 'error', message: error.message });
   }
 };
 
@@ -166,24 +175,27 @@ export const getStudentAttendance = async (req, res) => {
     const { startDate, endDate } = req.query;
 
     const filter = { student: studentId };
-    
+
     if (startDate && endDate) {
       filter.date = {
         $gte: new Date(startDate),
-        $lte: new Date(endDate)
+        $lte: new Date(endDate),
       };
     }
 
-    const attendanceRecords = await Attendance.find(filter)
-      .sort({ date: -1 });
+    const attendanceRecords = await Attendance.find(filter).sort({ date: -1 });
 
     // Calculate attendance statistics
     const totalDays = attendanceRecords.length;
-    const presentDays = attendanceRecords.filter(record => record.status === 'Present').length;
-    const absentDays = attendanceRecords.filter(record => record.status === 'Absent').length;
-    const lateDays = attendanceRecords.filter(record => record.status === 'Late').length;
-    
-    const attendancePercentage = totalDays > 0 ? (presentDays / totalDays) * 100 : 0;
+    const presentDays = attendanceRecords.filter(
+      (record) => record.status === 'Present'
+    ).length;
+    const absentDays = attendanceRecords.filter(
+      (record) => record.status === 'Absent'
+    ).length;
+
+    const attendancePercentage =
+      totalDays > 0 ? (presentDays / totalDays) * 100 : 0;
 
     res.status(200).json({
       status: 'success',
@@ -193,15 +205,14 @@ export const getStudentAttendance = async (req, res) => {
           totalDays,
           presentDays,
           absentDays,
-          lateDays,
-          attendancePercentage: attendancePercentage.toFixed(2)
-        }
-      }
+          attendancePercentage: attendancePercentage.toFixed(2),
+        },
+      },
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
-      message: error.message
+      message: error.message,
     });
   }
 };
@@ -209,36 +220,38 @@ export const getStudentAttendance = async (req, res) => {
 // Get my attendance (for logged in student)
 export const getMyAttendance = async (req, res) => {
   try {
-    // Find the student profile for the logged in user
     const student = await Student.findOne({ userId: req.user.id });
     if (!student) {
       return res.status(404).json({
         status: 'error',
-        message: 'Student profile not found'
+        message: 'Student profile not found',
       });
     }
 
     const { startDate, endDate } = req.query;
 
     const filter = { student: student._id };
-    
+
     if (startDate && endDate) {
       filter.date = {
         $gte: new Date(startDate),
-        $lte: new Date(endDate)
+        $lte: new Date(endDate),
       };
     }
 
-    const attendanceRecords = await Attendance.find(filter)
-      .sort({ date: -1 });
+    const attendanceRecords = await Attendance.find(filter).sort({ date: -1 });
 
     // Calculate attendance statistics
     const totalDays = attendanceRecords.length;
-    const presentDays = attendanceRecords.filter(record => record.status === 'Present').length;
-    const absentDays = attendanceRecords.filter(record => record.status === 'Absent').length;
-    const lateDays = attendanceRecords.filter(record => record.status === 'Late').length;
-    
-    const attendancePercentage = totalDays > 0 ? (presentDays / totalDays) * 100 : 0;
+    const presentDays = attendanceRecords.filter(
+      (record) => record.status === 'Present'
+    ).length;
+    const absentDays = attendanceRecords.filter(
+      (record) => record.status === 'Absent'
+    ).length;
+
+    const attendancePercentage =
+      totalDays > 0 ? (presentDays / totalDays) * 100 : 0;
 
     res.status(200).json({
       status: 'success',
@@ -248,15 +261,14 @@ export const getMyAttendance = async (req, res) => {
           totalDays,
           presentDays,
           absentDays,
-          lateDays,
-          attendancePercentage: attendancePercentage.toFixed(2)
-        }
-      }
+          attendancePercentage: attendancePercentage.toFixed(2),
+        },
+      },
     });
   } catch (error) {
     res.status(400).json({
       status: 'error',
-      message: error.message
+      message: error.message,
     });
   }
 };

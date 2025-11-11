@@ -8,7 +8,7 @@ const assignmentSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: [true, 'Please provide assignment description']
+    trim: true
   },
   subject: {
     type: String,

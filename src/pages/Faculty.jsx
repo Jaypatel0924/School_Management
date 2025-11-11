@@ -1,38 +1,74 @@
-import React from 'react';
-import { Mail, Phone, Award } from 'lucide-react';
+import React from "react";
+import { Mail, Phone, Award } from "lucide-react";
 
 const Faculty = () => {
   const faculty = [
     {
       id: 1,
-      name: 'Dr. Sarah Johnson',
-      role: 'Head of Science Department',
-      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      subjects: ['Physics', 'Advanced Science'],
-      experience: '15+ years',
-      education: 'Ph.D. in Physics',
-      awards: ['Best Teacher 2023', 'Research Excellence Award']
+      name: "Dr. Kalyani Patel",
+      role: "Head of Science Department",
+      image:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+      subjects: ["Physics", "Advanced Science"],
+      experience: "15+ years",
+      education: "Ph.D. in Physics",
+      awards: ["Best Teacher 2023", "Research Excellence Award"],
     },
     {
       id: 2,
-      name: 'Prof. Michael Chen',
-      role: 'Mathematics Department',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      subjects: ['Mathematics', 'Statistics'],
-      experience: '12+ years',
-      education: 'M.Sc. Mathematics',
-      awards: ['Innovation in Teaching 2023']
+      name: "Prof. Hitesh Parmar",
+      role: "Mathematics Department",
+      image:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+      subjects: ["Mathematics", "Statistics"],
+      experience: "12+ years",
+      education: "M.Sc. Mathematics",
+      awards: ["Innovation in Teaching 2023"],
     },
     {
       id: 3,
-      name: 'Dr. Emily Brown',
-      role: 'English Department Head',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      subjects: ['English Literature', 'Creative Writing'],
-      experience: '10+ years',
-      education: 'Ph.D. in Literature',
-      awards: ['Excellence in Education 2023']
-    }
+      name: "Dr. Pritesh Vyas",
+      role: "English Department Head",
+      image:
+        "https://imgs.search.brave.com/BMqd1ylLZzCRQEgy-nW1FmkEsaFUgT104UuRZOKpQwU/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTE1/ODY4MTI2L3Bob3Rv/L3NtaWxpbmctYnVz/aW5lc3NtYW4uanBn/P3M9NjEyeDYxMiZ3/PTAmaz0yMCZjPW1w/UHdLdHhYTGRaZmJf/YlRmWDNaUWlMTElM/SUNIbTJEUnB1ekJC/Tk1KYkE9",
+      subjects: ["English Literature", "Creative Writing"],
+      experience: "10+ years",
+      education: "Ph.D. in Literature",
+      awards: ["Excellence in Education 2023"],
+    },
+    {
+      id: 4,
+      name: "Dr. Bina Manojkumar",
+      role: "Head of Science Department",
+      image:
+        "https://imgs.search.brave.com/BHgLoXhIuyw1XNE7kzd2neDWoLt5ZSqUEodVLDwKKaI/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTI3/ODEzOTU2OC9waG90/by9zdHVkaW8tcG9y/dHJhaXQtb2YtMjAt/eWVhci1vbGQtd29t/YW4uanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPUZTRWRYNkVH/S3JqYkN2T0prOWlk/aVlaSm9TRXJBOWJ3/aXpIRWtXODZBM2M9",
+      subjects: ["Physics", "Advanced Science"],
+      experience: "15+ years",
+      education: "Ph.D. in Physics",
+      awards: ["Best Teacher 2023", "Research Excellence Award"],
+    },
+    {
+      id: 5,
+      name: "Prof. Jigar Raval",
+      role: "Mathematics Department",
+      image:
+        "https://imgs.search.brave.com/YIQKYAq07x30RG9TuAHsW-6tNTwaB6ohBB_M2REp4Eg/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9mYWNlLXlvdW5n/LWhhbmRzb21lLW1h/bl8yNTExMzYtMjA4/MjIuanBnP3NlbXQ9/YWlzX2h5YnJpZA",
+      subjects: ["Mathematics", "Statistics"],
+      experience: "12+ years",
+      education: "M.Sc. Mathematics",
+      awards: ["Innovation in Teaching 2023"],
+    },
+    {
+      id: 6,
+      name: "Dr. Sudeep Soni",
+      role: "English Department Head",
+      image:
+        "https://imgs.search.brave.com/J_XQNA5Wrpc7q5N_TYRKRn7miejmI3Mq5In7hPj150Q/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9hZHVsdC1tYW4t/c2VyZW5lLWZhY2Ut/ZXhwcmVzc2lvbi1z/dHVkaW8tcG9ydHJh/aXRfNTM4NzYtNzk3/MzcuanBnP3NlbXQ9/YWlzX2h5YnJpZA",
+      subjects: ["English Literature", "Creative Writing"],
+      experience: "10+ years",
+      education: "Ph.D. in Literature",
+      awards: ["Excellence in Education 2023"],
+    },
   ];
 
   return (
@@ -41,7 +77,8 @@ const Faculty = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-4xl font-bold text-gray-900 mb-6">Our Faculty</h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Meet our dedicated team of educators committed to academic excellence and student success.
+          Meet our dedicated team of educators committed to academic excellence
+          and student success.
         </p>
       </section>
 
@@ -49,7 +86,10 @@ const Faculty = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {faculty.map((member) => (
-            <div key={member.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div
+              key={member.id}
+              className="bg-white rounded-lg shadow-lg overflow-hidden"
+            >
               <div className="aspect-w-3 aspect-h-2">
                 <img
                   src={member.image}
@@ -59,24 +99,32 @@ const Faculty = () => {
               </div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">{member.name}</h3>
-                <p className="text-indigo-600 font-medium mb-4">{member.role}</p>
-                
+                <p className="text-indigo-600 font-medium mb-4">
+                  {member.role}
+                </p>
+
                 <div className="space-y-3 text-gray-600">
-                  <p><strong>Subjects:</strong> {member.subjects.join(', ')}</p>
-                  <p><strong>Experience:</strong> {member.experience}</p>
-                  <p><strong>Education:</strong> {member.education}</p>
+                  <p>
+                    <strong>Subjects:</strong> {member.subjects.join(", ")}
+                  </p>
+                  <p>
+                    <strong>Experience:</strong> {member.experience}
+                  </p>
+                  <p>
+                    <strong>Education:</strong> {member.education}
+                  </p>
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <div className="flex items-center space-x-2">
                     <Award className="h-5 w-5 text-indigo-600" />
                     <span className="text-sm text-gray-600">
-                      {member.awards.join(' • ')}
+                      {member.awards.join(" • ")}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-6 flex space-x-4">
+                {/* <div className="mt-6 flex space-x-4">
                   <button className="flex-1 btn-secondary flex items-center justify-center">
                     <Mail className="h-4 w-4 mr-2" />
                     Contact
@@ -85,7 +133,7 @@ const Faculty = () => {
                     <Phone className="h-4 w-4 mr-2" />
                     Schedule
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           ))}

@@ -1,29 +1,30 @@
 import express from 'express';
-import { 
-  createFeeRecord, 
-  updateFeeRecord, 
-  recordFeePayment, 
-  getAllFeeRecords, 
-  getStudentFeeRecords,
+import {
+  createFeeRecord,
+  getAllFeeRecords,
+  getFeeStatistics,
+  createPaymentOrder,
+  verifyPayment,
   getMyFeeRecords
 } from '../controllers/feeController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Protected routes
 router.use(protect);
 
-// Routes for admin
+// Admin routes
 router.route('/')
   .post(restrictTo('admin'), createFeeRecord)
   .get(restrictTo('admin'), getAllFeeRecords);
 
-router.patch('/:id', restrictTo('admin'), updateFeeRecord);
-router.patch('/:id/payment', restrictTo('admin'), recordFeePayment);
-router.get('/student/:studentId', restrictTo('admin'), getStudentFeeRecords);
+router.get('/statistics', restrictTo('admin'), getFeeStatistics);
 
-// Routes for students
+// Payment routes
+router.post('/create-payment', createPaymentOrder);
+router.post('/verify-payment', verifyPayment);
+
+// Student routes
 router.get('/my-fees', restrictTo('student'), getMyFeeRecords);
 
 export default router;

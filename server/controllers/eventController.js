@@ -1,4 +1,7 @@
 import Event from '../models/Event.js';
+import Student from '../models/Student.js';
+import Teacher from '../models/Teacher.js';
+import Notification from '../models/Notification.js';
 
 // Create new event (admin only)
 export const createEvent = async (req, res) => {
@@ -15,6 +18,29 @@ export const createEvent = async (req, res) => {
       location,
       createdBy: req.user.id,
     });
+
+    // Create notifications for all students and teachers
+    const students = await Student.find({});
+    const teachers = await Teacher.find({});
+
+    const notifications = [
+      ...students.map(student => ({
+        recipient: student._id,
+        recipientModel: 'Student',
+        message: `New event scheduled: ${title} on ${new Date(date).toLocaleDateString()} at ${startTime}`,
+        type: 'event',
+        date: new Date()
+      })),
+      ...teachers.map(teacher => ({
+        recipient: teacher._id,
+        recipientModel: 'Teacher',
+        message: `New event scheduled: ${title} on ${new Date(date).toLocaleDateString()} at ${startTime}`,
+        type: 'event',
+        date: new Date()
+      }))
+    ];
+
+    await Notification.insertMany(notifications);
 
     res.status(201).json({
       status: 'success',
@@ -46,7 +72,8 @@ export const getAllEvents = async (req, res) => {
 
     const events = await Event.find(filter)
       .populate('createdBy', 'name')
-      .sort({ date: 1 });
+      // sort by date then startTime so timewise ordering is preserved
+      .sort({ date: 1, startTime: 1 });
 
     res.status(200).json({
       status: 'success',

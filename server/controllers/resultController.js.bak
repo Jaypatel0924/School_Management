@@ -1,0 +1,657 @@
+// import Result from '../models/Result.js';
+// import { v2 as cloudinary } from 'cloudinary';  // Add this import at the top
+// import Student from '../models/Student.js';
+
+// import { uploadToCloudinary, deleteFromCloudinary } from '../utils/cloudinary.js';
+// import axios from 'axios';
+
+
+// // Add result file
+// export const addResultFile = async (req, res) => {
+//   try {
+//     const { grade, examType, subject, resultFileUrl } = req.body;
+
+//     // Check if the user is an admin
+//     if (req.user.role !== 'admin') {
+//       return res.status(403).json({
+//         status: 'error',
+//         message: 'Only admin can upload result files',
+//       });
+//     }
+
+//     const newResult = await Result.create({
+//       grade,
+//       examType,
+//       subject,
+//       resultFileUrl,
+//       uploadedBy: req.user.id,
+//       uploadDate: new Date(),
+//     });
+
+//     res.status(201).json({
+//       status: 'success',
+//       data: {
+//         result: newResult,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // // Get results by grade
+// export const getResultsByGrade = async (req, res) => {
+//   try {
+//     const { grade } = req.params;
+
+//     // For students, only show their grade's results
+//     if (req.user.role === 'student') {
+//       const student = await Student.findOne({ userId: req.user.id });
+//       if (!student || student.grade !== grade) {
+//         return res.status(403).json({
+//           status: 'error',
+//           message: 'You can only view results for your grade',
+//         });
+//       }
+//     }
+
+//     const results = await Result.find({ grade })
+//       .populate('uploadedBy', 'name')
+//       .sort({ uploadDate: -1 });
+
+//     res.status(200).json({
+//       status: 'success',
+//       data: {
+//         results,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // // Get my results (for students)
+// export const getMyResults = async (req, res) => {
+//   try {
+//     const student = await Student.findOne({ userId: req.user.id });
+//     if (!student) {
+//       return res.status(404).json({
+//         status: 'error',
+//         message: 'Student profile not found',
+//       });
+//     }
+
+//     const results = await Result.find({ grade: student.grade })
+//       .populate('uploadedBy', 'name')
+//       .sort({ uploadDate: -1 });
+
+//     res.status(200).json({
+//       status: 'success',
+//       data: {
+//         results,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // // Delete result
+// export const deleteResult = async (req, res) => {
+//   try {
+//     const result = await Result.findById(req.params.id);
+
+//     if (!result) {
+//       return res.status(404).json({
+//         status: 'error',
+//         message: 'Result not found',
+//       });
+//     }
+
+//     // Only admin can delete results
+//     if (req.user.role !== 'admin') {
+//       return res.status(403).json({
+//         status: 'error',
+//         message: 'Only admin can delete results',
+//       });
+//     }
+
+//     await Result.findByIdAndDelete(req.params.id);
+
+//     res.status(204).json({
+//       status: 'success',
+//       data: null,
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // // Get all results (admin only)
+// export const getResults = async (req, res) => {
+//   try {
+//     // Additional check (though restrictTo middleware already handles this)
+//     if (req.user.role !== 'admin') {
+//       return res.status(403).json({
+//         status: 'error',
+//         message: 'Unauthorized access'
+//       });
+//     }
+
+//     // Get query parameters for filtering
+//     const { grade, examType, subject, fromDate, toDate } = req.query;
+    
+//     // Build filter object
+//     const filter = {};
+//     if (grade) filter.grade = grade;
+//     if (examType) filter.examType = examType;
+//     if (subject) filter.subject = subject;
+    
+//     // Date range filter
+//     if (fromDate || toDate) {
+//       filter.uploadDate = {};
+//       if (fromDate) filter.uploadDate.$gte = new Date(fromDate);
+//       if (toDate) filter.uploadDate.$lte = new Date(toDate);
+//     }
+
+//     // Get pagination parameters
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+//     const skip = (page - 1) * limit;
+
+//     // Get sorting parameters
+//     const sortBy = req.query.sortBy || 'uploadDate';
+//     const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
+//     const sort = { [sortBy]: sortOrder };
+
+//     // Query database with pagination and filtering
+//     const results = await Result.find(filter)
+//       .populate('uploadedBy', 'name email')
+//       .sort(sort)
+//       .skip(skip)
+//       .limit(limit);
+
+//     // Get total count for pagination
+//     const totalResults = await Result.countDocuments(filter);
+
+//     res.status(200).json({
+//       status: 'success',
+//       results: results.length,
+//       totalResults,
+//       totalPages: Math.ceil(totalResults / limit),
+//       currentPage: page,
+//       data: {
+//         results
+//       }
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'error',
+//       message: error.message
+//     });
+//   }
+// };
+
+// export const uploadResult = async (req, res) => {
+//   try {
+//     console.log('Upload request received:', req.body);
+//     console.log('File received:', req.file);
+
+//     if (!req.file) {
+//       return res.status(400).json({
+//         status: 'error',
+//         message: 'No file uploaded',
+//       });
+//     }
+
+//     // Validate request body
+//     const { grade, examType, subject } = req.body;
+
+//     if (!grade || !examType || !subject) {
+//       return res.status(400).json({
+//         status: 'error',
+//         message:
+//           'Missing required fields: grade, examType, and subject are required',
+//       });
+//     }
+
+//     // Upload file to Cloudinary
+//     try {
+//       const cloudinaryResult = await uploadToCloudinary(req.file.buffer, {
+//         // folder: 'school-results',
+//         resource_type: 'raw',
+//       });
+
+//       console.log('Cloudinary upload success:', cloudinaryResult);
+
+//       // Create result record
+//       const result = await Result.create({
+//         grade,
+//         examType,
+//         subject,
+//         resultFileUrl: cloudinaryResult.secure_url,
+//         filePublicId: cloudinaryResult.public_id,
+//         uploadedBy: req.user.id,
+//         uploadDate: new Date(),
+//       });
+
+//       return res.status(201).json({
+//         status: 'success',
+//         data: {
+//           result,
+//         },
+//       });
+//     } catch (cloudinaryError) {
+//       console.error('Cloudinary upload error:', cloudinaryError);
+//       return res.status(500).json({
+//         status: 'error',
+//         message: 'Failed to upload file to cloud storage',
+//         details: cloudinaryError.message,
+//       });
+//     }
+//   } catch (error) {
+//     console.error('Upload result error:', error);
+//     return res.status(500).json({
+//       status: 'error',
+//       message: error.message || 'An error occurred during file upload',
+//     });
+//   }
+// };
+
+
+// export const downloadResult = async (req, res) => {
+//   try {
+//     const result = await Result.findById(req.params.id).lean();
+    
+//     if (!result) {
+//       return res.status(404).json({
+//         status: 'error',
+//         message: 'Result not found'
+//       });
+//     }
+
+//     if (!result.resultFileUrl || !result.filePublicId) {
+//       return res.status(404).json({
+//         status: 'error',
+//         message: 'Result file not available'
+//       });
+//     }
+
+//     // Sanitize filename
+//     const sanitizeFilename = (name) => 
+//       name.replace(/[^a-zA-Z0-9_\-. ]/g, '_').replace(/\s+/g, '_');
+    
+//     const filename = sanitizeFilename(
+//       `${result.subject || 'subject'}_${result.examType || 'exam'}_${result.grade || 'grade'}.pdf`
+//     );
+
+//     // Method 1: Direct Cloudinary download (recommended)
+//     const downloadUrl = cloudinary.url(result.filePublicId, {
+//       resource_type: 'raw',
+//       secure: true,
+//       sign_url: true,
+//       flags: 'attachment',
+//       attachment: filename
+//     });
+
+//     res.redirect(downloadUrl);
+
+   
+
+//   } catch (error) {
+//     console.error('Download failed:', error);
+    
+//     if (error.response?.status === 404) {
+//       return res.status(404).json({
+//         status: 'error',
+//         message: 'File not found on storage server'
+//       });
+//     }
+
+//     return res.status(500).json({
+//       status: 'error',
+//       message: 'Download processing failed',
+//       ...(process.env.NODE_ENV === 'development' && {
+//         detail: error.message,
+//         stack: error.stack
+//       })
+//     });
+//   }
+// };
+
+
+
+import Result from '../models/Result.js';
+import Student from '../models/Student.js';
+import fs from 'fs';
+import path from 'path';
+import { sendAssignmentReminder, sendResultNotification } from '../utils/email.js';
+import { generateResultTemplate } from '../utils/excelGenerator.js';
+
+const uploadResult = async (req, res) => {
+
+// Upload result
+export const uploadResult = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please provide a file'
+      });
+    }
+
+    const {
+      title,
+      description,
+      grade,
+      section,
+      type
+    } = req.body;
+
+    const newResult = await Result.create({
+      title,
+      description,
+      grade,
+      section,
+      type,
+      fileUrl: req.file.path,
+      uploadedBy: req.user.id
+    });
+
+    // Find all students in this grade and section to send notifications
+    const students = await Student.find({
+      grade,
+      section
+    }).populate('userId', 'email name');
+
+    // Send notifications to all affected students
+    await Promise.all(students.map(student => 
+      sendResultNotification(
+        student.userId.email,
+        student.userId.name,
+        {
+          title,
+          type,
+          grade,
+          section
+        }
+      ).catch(err => console.error(`Failed to send notification to ${student.userId.email}:`, err))
+    ));
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        result: newResult
+      }
+    });
+  } catch (error) {
+    // Delete uploaded file if database operation fails
+    if (req.file) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error('Error deleting file:', err);
+      });
+    }
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+// Get all results (admin only)
+export const getAllResults = async (req, res) => {
+  try {
+    const results = await Result.find()
+      .populate('uploadedBy', 'name')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      status: 'success',
+      results: results.length,
+      data: {
+        results
+      }
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+// Get results by grade and section
+export const getResultsByGrade = async (req, res) => {
+  try {
+    const { grade, section } = req.query;
+
+    const filter = {};
+    if (grade) filter.grade = grade;
+    if (section) filter.section = section;
+
+    const results = await Result.find(filter)
+      .populate('uploadedBy', 'name')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      status: 'success',
+      results: results.length,
+      data: {
+        results
+      }
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+// Get my results (for students)
+export const getMyResults = async (req, res) => {
+  try {
+    const student = await Student.findOne({ userId: req.user.id });
+    if (!student) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Student profile not found'
+      });
+    }
+
+    const results = await Result.find({
+      grade: student.grade,
+      section: student.section
+    })
+      .populate('uploadedBy', 'name')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      status: 'success',
+      results: results.length,
+      data: {
+        results
+      }
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+// Download result
+export const downloadResult = async (req, res) => {
+  try {
+    const result = await Result.findById(req.params.id);
+    
+    if (!result) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Result not found'
+      });
+    }
+
+    // Check if user is authorized to download
+    if (req.user.role === 'student') {
+      const student = await Student.findOne({ userId: req.user.id });
+      if (!student || student.grade !== result.grade || student.section !== result.section) {
+        return res.status(403).json({
+          status: 'error',
+          message: 'You are not authorized to download this result'
+        });
+      }
+    }
+
+    // Check if file exists
+    if (!fs.existsSync(result.fileUrl)) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Result file not found'
+      });
+    }
+
+    const filename = path.basename(result.fileUrl);
+    res.download(result.fileUrl, filename);
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+// Delete result
+export const deleteResult = async (req, res) => {
+  try {
+    const result = await Result.findById(req.params.id);
+    
+    if (!result) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Result not found'
+      });
+    }
+
+    // Delete file from filesystem
+    if (fs.existsSync(result.fileUrl)) {
+      fs.unlinkSync(result.fileUrl);
+    }
+
+    // Delete result from database
+    await Result.findByIdAndDelete(req.params.id);
+
+    res.status(204).json({
+      status: 'success',
+      data: null
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+// Process exam results payload and promote students if Final Term and passed
+// Generate result template Excel file
+export const generateResultExcelTemplate = async (req, res) => {
+  try {
+    const { grade, section } = req.query;
+
+    if (!grade || !section) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please provide both grade and section'
+      });
+    }
+
+    // Check if admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Only administrators can generate result templates'
+      });
+    }
+
+    const workbook = await generateResultTemplate(grade, section);
+
+    // Set the response headers
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=Result_Template_${grade}_${section}_${Date.now()}.xlsx`);
+
+    // Write to response
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error('Error generating result template:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to generate result template',
+      details: error.message
+    });
+  }
+};
+
+const processFinalResults = async (req, res) => {
+  try {
+    // Expect payload: { examType: 'Final Term', results: [{ studentId: '<studentId>', passed: true }, ...] }
+    const { examType, results } = req.body;
+
+    if (!examType || !Array.isArray(results)) {
+      return res.status(400).json({ status: 'error', message: 'Invalid payload' });
+    }
+
+    if (examType !== 'Final Term') {
+      return res.status(200).json({ status: 'success', message: 'No promotion required for non-final exams' });
+    }
+
+    const gradeOrder = ['Grade 8', 'Grade 9', 'Grade 10'];
+
+    const promoted = [];
+
+    for (const r of results) {
+      if (!r.studentId) continue;
+      const student = await Student.findById(r.studentId);
+      if (!student) continue;
+
+      if (r.passed) {
+        const currentIndex = gradeOrder.indexOf(student.grade);
+        if (currentIndex >= 0 && currentIndex < gradeOrder.length - 1) {
+          student.grade = gradeOrder[currentIndex + 1];
+          await student.save();
+          promoted.push({ studentId: student._id, newGrade: student.grade });
+        }
+      }
+    }
+
+    res.status(200).json({ status: 'success', data: { promoted } });
+  } catch (error) {
+    res.status(400).json({ status: 'error', message: error.message });
+  }
+};
+
+// Export all functions
+export {
+  uploadResult,
+  getAllResults,
+  getResultsByGrade,
+  getMyResults,
+  downloadResult,
+  deleteResult,
+  processFinalResults,
+  generateResultExcelTemplate
+};

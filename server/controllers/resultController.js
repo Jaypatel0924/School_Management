@@ -1,517 +1,385 @@
-// import Result from '../models/Result.js';
-// import Exam from '../models/Exam.js';
-// import Student from '../models/Student.js';
-// import Teacher from '../models/Teacher.js';
-
-// // Add result
-// export const addResult = async (req, res) => {
-//   try {
-//     // const { examId, studentId, marks, grade, remarks } = req.body;
-//     const {  studentId, marks, grade, remarks } = req.body;
-
-//     // Check if exam exists
-//     // const exam = await Exam.findById(examId);
-//     // if (!exam) {
-//     //   return res.status(404).json({
-//     //     status: 'error',
-//     //     message: 'Exam not found'
-//     //   });
-//     // }
-
-//     // Check if student exists
-//     const student = await Student.findById(studentId);
-//     if (!student) {
-//       return res.status(404).json({
-//         status: 'error',
-//         message: 'Student not found'
-//       });
-//     }
-
-//     // Find the teacher profile for the logged in user
-//     const teacher = await Teacher.findOne({ userId: req.user.id });
-//     if (!teacher) {
-//       return res.status(404).json({
-//         status: 'error',
-//         message: 'Teacher profile not found'
-//       });
-//     }
-
-//     // Check if result already exists for this student and exam
-//     const existingResult = await Result.findOne({
-//       student: studentId,
-//       exam: examId
-//     });
-
-//     if (existingResult) {
-//       // Update existing result
-//       existingResult.marks = marks;
-//       existingResult.grade = grade;
-//       existingResult.remarks = remarks;
-//       existingResult.addedBy = teacher._id;
-//       await existingResult.save();
-
-//       return res.status(200).json({
-//         status: 'success',
-//         data: {
-//           result: existingResult
-//         }
-//       });
-//     }
-
-//     // Create new result
-//     const newResult = await Result.create({
-//       student: studentId,
-//       // exam: examId,
-//       marks,
-//       grade,
-//       remarks,
-//       addedBy: teacher._id
-//     });
-
-//     res.status(201).json({
-//       status: 'success',
-//       data: {
-//         result: newResult
-//       }
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       status: 'error',
-//       message: error.message
-//     });
-//   }
-// };
-
-// // Add bulk results
-// export const addBulkResults = async (req, res) => {
-//   try {
-//     const { examId, results } = req.body;
-
-//     // Check if exam exists
-//     const exam = await Exam.findById(examId);
-//     if (!exam) {
-//       return res.status(404).json({
-//         status: 'error',
-//         message: 'Exam not found'
-//       });
-//     }
-
-//     // Find the teacher profile for the logged in user
-//     const teacher = await Teacher.findOne({ userId: req.user.id });
-//     if (!teacher) {
-//       return res.status(404).json({
-//         status: 'error',
-//         message: 'Teacher profile not found'
-//       });
-//     }
-
-//     const createdResults = [];
-
-//     // Process each result
-//     for (const result of results) {
-//       const { studentId, marks, grade, remarks } = result;
-
-//       // Check if student exists
-//       const student = await Student.findById(studentId);
-//       if (!student) {
-//         continue; // Skip this student if not found
-//       }
-
-//       // Check if result already exists for this student and exam
-//       const existingResult = await Result.findOne({
-//         student: studentId,
-//         exam: examId
-//       });
-
-//       if (existingResult) {
-//         // Update existing result
-//         existingResult.marks = marks;
-//         existingResult.grade = grade;
-//         existingResult.remarks = remarks;
-//         existingResult.addedBy = teacher._id;
-//         await existingResult.save();
-//         createdResults.push(existingResult);
-//       } else {
-//         // Create new result
-//         const newResult = await Result.create({
-//           student: studentId,
-//           exam: examId,
-//           marks,
-//           grade,
-//           remarks,
-//           addedBy: teacher._id
-//         });
-//         createdResults.push(newResult);
-//       }
-//     }
-
-//     res.status(200).json({
-//       status: 'success',
-//       results: createdResults.length,
-//       data: {
-//         results: createdResults
-//       }
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       status: 'error',
-//       message: error.message
-//     });
-//   }
-// };
-
-// // Get results by exam
-// export const getResultsByExam = async (req, res) => {
-//   try {
-//     const { examId } = req.params;
-
-//     // Check if exam exists
-//     const exam = await Exam.findById(examId);
-//     if (!exam) {
-//       return res.status(404).json({
-//         status: 'error',
-//         message: 'Exam not found'
-//       });
-//     }
-
-//     const results = await Result.find({ exam: examId })
-//       .populate('student', 'name rollNumber grade section')
-//       .populate('addedBy', 'name')
-//       .sort({ marks: -1 });
-
-//     // Calculate statistics
-//     const totalStudents = results.length;
-//     const totalMarks = exam.maxMarks * totalStudents;
-//     const marksObtained = results.reduce((sum, result) => sum + result.marks, 0);
-//     const averageMarks = totalStudents > 0 ? marksObtained / totalStudents : 0;
-//     const passPercentage = totalStudents > 0 
-//       ? (results.filter(result => result.marks >= (exam.maxMarks * 0.4)).length / totalStudents) * 100 
-//       : 0;
-
-//     res.status(200).json({
-//       status: 'success',
-//       data: {
-//         results,
-//         statistics: {
-//           totalStudents,
-//           totalMarks,
-//           marksObtained,
-//           averageMarks: averageMarks.toFixed(2),
-//           passPercentage: passPercentage.toFixed(2)
-//         }
-//       }
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       status: 'error',
-//       message: error.message
-//     });
-//   }
-// };
-
-// // Get student's results
-// export const getStudentResults = async (req, res) => {
-//   try {
-//     const { studentId } = req.params;
-
-//     // Check if student exists
-//     const student = await Student.findById(studentId);
-//     if (!student) {
-//       return res.status(404).json({
-//         status: 'error',
-//         message: 'Student not found'
-//       });
-//     }
-
-//     const results = await Result.find({ student: studentId })
-//       .populate({
-//         path: 'exam',
-//         select: 'name type subject date maxMarks',
-//         populate: {
-//           path: 'createdBy',
-//           select: 'name'
-//         }
-//       })
-//       .sort({ 'exam.date': -1 });
-
-//     res.status(200).json({
-//       status: 'success',
-//       results: results.length,
-//       data: {
-//         results
-//       }
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       status: 'error',
-//       message: error.message
-//     });
-//   }
-// };
-
-// // Get my results (for logged in student)
-// export const getMyResults = async (req, res) => {
-//   try {
-//     // Find the student profile for the logged in user
-//     const student = await Student.findOne({ userId: req.user.id });
-//     if (!student) {
-//       return res.status(404).json({
-//         status: 'error',
-//         message: 'Student profile not found'
-//       });
-//     }
-
-//     const results = await Result.find({ student: student._id })
-//       .populate({
-//         path: 'exam',
-//         select: 'name type subject date maxMarks',
-//         populate: {
-//           path: 'createdBy',
-//           select: 'name'
-//         }
-//       })
-//       .sort({ 'exam.date': -1 });
-
-//     // Group results by subject
-//     const resultsBySubject = {};
-//     results.forEach(result => {
-//       const subject = result.exam.subject;
-//       if (!resultsBySubject[subject]) {
-//         resultsBySubject[subject] = [];
-//       }
-//       resultsBySubject[subject].push(result);
-//     });
-
-//     res.status(200).json({
-//       status: 'success',
-//       data: {
-//         results,
-//         resultsBySubject
-//       }
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       status: 'error',
-//       message: error.message
-//     });
-//   }
-// };
-
 import Result from '../models/Result.js';
-import Exam from '../models/Exam.js';
 import Student from '../models/Student.js';
-import Teacher from '../models/Teacher.js';
+import fs from 'fs';
+import path from 'path';
+import { sendAssignmentReminder, sendResultNotification } from '../utils/email.js';
+import { generateResultTemplate } from '../utils/excelGenerator.js';
 
-// Add result
-export const addResult = async (req, res) => {
+const uploadResult = async (req, res) => {
   try {
-    const { studentId, marks, grade, remarks } = req.body;
-
-    // Check if student exists
-    const student = await Student.findById(studentId);
-    if (!student) {
-      return res.status(404).json({
+    if (!req.file) {
+      return res.status(400).json({
         status: 'error',
-        message: 'Student not found'
+        message: 'Please provide a file'
       });
     }
+    // For bulk/class result uploads we expect a file + grade/section/type/title/description
+    const { title, description, grade, section, type } = req.body;
 
-    // Check if the user is a teacher or an admin
-    let teacher = await Teacher.findOne({ userId: req.user.id });
-    let isAdmin = req.user.role === 'admin';
+    // Get current academic year (June to April)
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1; // 1-12
+    
+    // If current month is between June and December, academic year is currentYear-nextYear
+    // If current month is between January and April, academic year is previousYear-currentYear
+    const academicYear = currentMonth >= 6 
+      ? `${currentYear}-${currentYear + 1}` 
+      : `${currentYear - 1}-${currentYear}`;
 
-    if (!teacher && !isAdmin) {
-      return res.status(403).json({
-        status: 'error',
-        message: 'Unauthorized to add results'
-      });
-    }
-
-    // Check if result already exists for this student
-    const existingResult = await Result.findOne({ student: studentId });
-
-    if (existingResult) {
-      // Update existing result
-      existingResult.marks = marks;
-      existingResult.grade = grade;
-      existingResult.remarks = remarks;
-      existingResult.addedBy = teacher ? teacher._id : req.user.id; // Admin or teacher ID
-      await existingResult.save();
-
-      return res.status(200).json({
-        status: 'success',
-        data: { result: existingResult }
-      });
-    }
-
-    // Create new result
     const newResult = await Result.create({
-      student: studentId,
-      marks,
-      grade,
-      remarks,
-      addedBy: teacher ? teacher._id : req.user.id
+      title: title || `${type || 'Result'} - ${grade || ''} ${section || ''}`,
+      description: description || '',
+      grade: grade || '',
+      section: section || '',
+      type: type || 'Other',
+      status: 'Draft',
+      fileUrl: req.file.path,
+      uploadedBy: req.user.id,
+      academicYear // Add the academic year
     });
+
+    // Find all students in this grade and section to send notifications
+    const students = await Student.find({
+      grade,
+      section
+    }).populate('userId', 'email name');
+
+    // Send notifications to all affected students
+    await Promise.all(students.map(student => 
+      sendResultNotification(
+        student.userId.email,
+        student.userId.name,
+        {
+          title,
+          type,
+          grade,
+          section
+        }
+      ).catch(err => console.error(`Failed to send notification to ${student.userId.email}:`, err))
+    ));
 
     res.status(201).json({
       status: 'success',
-      data: { result: newResult }
-    });
-  } catch (error) {
-    res.status(400).json({ status: 'error', message: error.message });
-  }
-};
-
-// Add bulk results
-export const addBulkResults = async (req, res) => {
-  try {
-    const { examId, results } = req.body;
-
-    // Check if exam exists
-    const exam = await Exam.findById(examId);
-    if (!exam) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'Exam not found'
-      });
-    }
-
-    // Check if the user is a teacher or an admin
-    let teacher = await Teacher.findOne({ userId: req.user.id });
-    let isAdmin = req.user.role === 'admin';
-
-    if (!teacher && !isAdmin) {
-      return res.status(403).json({
-        status: 'error',
-        message: 'Unauthorized to add results'
-      });
-    }
-
-    const createdResults = [];
-
-    for (const result of results) {
-      const { studentId, marks, grade, remarks } = result;
-
-      // Check if student exists
-      const student = await Student.findById(studentId);
-      if (!student) continue;
-
-      // Check if result already exists
-      const existingResult = await Result.findOne({ student: studentId, exam: examId });
-
-      if (existingResult) {
-        existingResult.marks = marks;
-        existingResult.grade = grade;
-        existingResult.remarks = remarks;
-        existingResult.addedBy = teacher ? teacher._id : req.user.id;
-        await existingResult.save();
-        createdResults.push(existingResult);
-      } else {
-        const newResult = await Result.create({
-          student: studentId,
-          exam: examId,
-          marks,
-          grade,
-          remarks,
-          addedBy: teacher ? teacher._id : req.user.id
-        });
-        createdResults.push(newResult);
-      }
-    }
-
-    res.status(200).json({
-      status: 'success',
-      results: createdResults.length,
-      data: { results: createdResults }
-    });
-  } catch (error) {
-    res.status(400).json({ status: 'error', message: error.message });
-  }
-};
-
-// Get results by exam
-export const getResultsByExam = async (req, res) => {
-  try {
-    const { examId } = req.params;
-    const exam = await Exam.findById(examId);
-
-    if (!exam) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'Exam not found'
-      });
-    }
-
-    const results = await Result.find({ exam: examId })
-      .populate('student', 'name rollNumber grade section')
-      .populate('addedBy', 'name')
-      .sort({ marks: -1 });
-
-    const totalStudents = results.length;
-    const totalMarks = exam.maxMarks * totalStudents;
-    const marksObtained = results.reduce((sum, result) => sum + result.marks, 0);
-    const averageMarks = totalStudents ? marksObtained / totalStudents : 0;
-    const passPercentage = totalStudents 
-      ? (results.filter(result => result.marks >= (exam.maxMarks * 0.4)).length / totalStudents) * 100 
-      : 0;
-
-    res.status(200).json({
-      status: 'success',
       data: {
-        results,
-        statistics: {
-          totalStudents,
-          totalMarks,
-          marksObtained,
-          averageMarks: averageMarks.toFixed(2),
-          passPercentage: passPercentage.toFixed(2)
-        }
+        result: newResult
       }
     });
   } catch (error) {
-    res.status(400).json({ status: 'error', message: error.message });
+    // Delete uploaded file if database operation fails
+    if (req.file) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error('Error deleting file:', err);
+      });
+    }
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
   }
 };
 
-// Get student's results
-export const getStudentResults = async (req, res) => {
+const getAllResults = async (req, res) => {
   try {
-    const { studentId } = req.params;
-    const student = await Student.findById(studentId);
-
-    if (!student) {
-      return res.status(404).json({ status: 'error', message: 'Student not found' });
-    }
-
-    const results = await Result.find({ student: studentId })
-      .populate('exam', 'name type subject date maxMarks')
-      .sort({ 'exam.date': -1 });
+    const results = await Result.find()
+      .populate('student', 'name rollNumber')
+      .populate('uploadedBy', 'name')
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       status: 'success',
       results: results.length,
-      data: { results }
+      data: {
+        results
+      }
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+const getResultsByGrade = async (req, res) => {
+  try {
+    const { grade, section } = req.query;
+
+    const filter = {};
+    if (grade) filter.grade = grade;
+    if (section) filter.section = section;
+
+    const results = await Result.find(filter)
+      .populate('uploadedBy', 'name')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      status: 'success',
+      results: results.length,
+      data: {
+        results
+      }
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+const getMyResults = async (req, res) => {
+  try {
+    const student = await Student.findOne({ userId: req.user.id });
+    if (!student) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Student profile not found'
+      });
+    }
+
+    const results = await Result.find({
+      grade: student.grade,
+      section: student.section
+    })
+      .populate('uploadedBy', 'name')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      status: 'success',
+      results: results.length,
+      data: {
+        results
+      }
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+const downloadResult = async (req, res) => {
+  try {
+    const result = await Result.findById(req.params.id);
+    
+    if (!result) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Result not found'
+      });
+    }
+
+    // Check if user is authorized to download
+    if (req.user.role === 'student') {
+      const student = await Student.findOne({ userId: req.user.id });
+      if (!student || student.grade !== result.grade || student.section !== result.section) {
+        return res.status(403).json({
+          status: 'error',
+          message: 'You are not authorized to download this result'
+        });
+      }
+    }
+
+    // Check if file exists
+    if (!fs.existsSync(result.fileUrl)) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Result file not found'
+      });
+    }
+
+    const filename = path.basename(result.fileUrl);
+    res.download(result.fileUrl, filename);
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+const deleteResult = async (req, res) => {
+  try {
+    const result = await Result.findById(req.params.id);
+    
+    if (!result) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Result not found'
+      });
+    }
+
+    // Delete file from filesystem
+    if (fs.existsSync(result.fileUrl)) {
+      fs.unlinkSync(result.fileUrl);
+    }
+
+    // Delete result from database
+    await Result.findByIdAndDelete(req.params.id);
+
+    res.status(204).json({
+      status: 'success',
+      data: null
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+const generateResultExcelTemplate = async (req, res) => {
+  try {
+    const { grade, section } = req.query;
+
+    if (!grade || !section) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please provide both grade and section'
+      });
+    }
+
+    // Check if admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Only administrators can generate result templates'
+      });
+    }
+
+    const workbook = await generateResultTemplate(grade, section);
+
+    // Set the response headers
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=Result_Template_${grade}_${section}_${Date.now()}.xlsx`);
+
+    // Write to response
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error('Error generating result template:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to generate result template',
+      details: error.message
+    });
+  }
+};
+
+const processFinalResults = async (req, res) => {
+  try {
+    const { examType, results, academicYear } = req.body;
+
+    if (!examType || !Array.isArray(results) || !academicYear) {
+      return res.status(400).json({ status: 'error', message: 'Invalid payload. Please provide examType, results array, and academicYear' });
+    }
+
+    if (examType !== 'Final Term') {
+      return res.status(200).json({ status: 'success', message: 'No promotion required for non-final exams' });
+    }
+
+    // Validate academic year format (e.g., "2025-2026")
+    if (!/^\d{4}-\d{4}$/.test(academicYear)) {
+      return res.status(400).json({ status: 'error', message: 'Invalid academic year format. Use YYYY-YYYY format' });
+    }
+
+    const gradeOrder = ['Grade 8', 'Grade 9', 'Grade 10'];
+    const promoted = [];
+    const endYear = academicYear.split('-')[1];
+    const currentMonth = new Date().getMonth() + 1; // 1-12
+
+    // Only process promotions between April and June
+    if (currentMonth < 4 || currentMonth > 6) {
+      return res.status(400).json({ 
+        status: 'error', 
+        message: 'Promotions can only be processed between April and June' 
+      });
+    }
+
+    for (const r of results) {
+      if (!r.studentId) continue;
+      const student = await Student.findById(r.studentId);
+      if (!student) continue;
+
+      if (r.passed) {
+        const currentIndex = gradeOrder.indexOf(student.grade);
+        if (currentIndex >= 0 && currentIndex < gradeOrder.length - 1) {
+          const newGrade = gradeOrder[currentIndex + 1];
+          
+          // Create promotion result record
+          await Result.create({
+            academicYear,
+            title: `Final Result and Promotion - ${academicYear}`,
+            student: student._id,
+            grade: student.grade,
+            section: student.section,
+            type: 'Final Term',
+            status: 'Published',
+            isPromoted: true,
+            promotedToGrade: newGrade,
+            percentage: r.percentage || 0,
+            totalMarks: r.totalMarks || 0,
+            obtainedMarks: r.obtainedMarks || 0,
+            uploadedBy: req.user.id,
+            fileUrl: r.fileUrl || ''
+          });
+
+          // Update student's grade
+          student.grade = newGrade;
+          await student.save();
+          
+          promoted.push({ 
+            studentId: student._id, 
+            name: student.name,
+            previousGrade: gradeOrder[currentIndex],
+            newGrade: newGrade 
+          });
+        } else if (currentIndex === gradeOrder.length - 1) {
+          // Handle graduation
+          await Result.create({
+            academicYear,
+            title: `Graduation Result - ${academicYear}`,
+            student: student._id,
+            grade: student.grade,
+            section: student.section,
+            type: 'Final Term',
+            status: 'Published',
+            isPromoted: true,
+            promotedToGrade: 'Graduated',
+            percentage: r.percentage || 0,
+            totalMarks: r.totalMarks || 0,
+            obtainedMarks: r.obtainedMarks || 0,
+            uploadedBy: req.user.id,
+            fileUrl: r.fileUrl || ''
+          });
+        }
+      }
+    }
+
+    res.status(200).json({ 
+      status: 'success', 
+      data: { 
+        academicYear,
+        promoted,
+        message: `Successfully processed promotions for academic year ${academicYear}`
+      } 
     });
   } catch (error) {
     res.status(400).json({ status: 'error', message: error.message });
   }
 };
 
-// Get logged-in student's results
-export const getMyResults = async (req, res) => {
-  try {
-    const student = await Student.findOne({ userId: req.user.id });
-
-    if (!student) {
-      return res.status(404).json({ status: 'error', message: 'Student profile not found' });
-    }
-
-    const results = await Result.find({ student: student._id })
-      .populate('exam', 'name type subject date maxMarks')
-      .sort({ 'exam.date': -1 });
-
-    res.status(200).json({ status: 'success', data: { results } });
-  } catch (error) {
-    res.status(400).json({ status: 'error', message: error.message });
-  }
+// Single export at the end
+export {
+  uploadResult,
+  getAllResults,
+  getResultsByGrade,
+  getMyResults,
+  downloadResult,
+  deleteResult,
+  processFinalResults,
+  generateResultExcelTemplate
 };

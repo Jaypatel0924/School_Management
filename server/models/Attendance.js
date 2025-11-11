@@ -4,30 +4,32 @@ const attendanceSchema = new mongoose.Schema({
   student: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Student',
-    required: true
+    required: true,
   },
   date: {
     type: Date,
-    required: true
+    required: true,
   },
   status: {
     type: String,
-    enum: ['Present', 'Absent', 'Late'],
-    required: true
+    enum: ['Present', 'Absent'],
+    required: true,
   },
   grade: {
     type: String,
-    required: true
+    required: true,
+    enum: ['Grade 8', 'Grade 9', 'Grade 10'],
   },
   section: {
     type: String,
-    required: true
+    required: true,
+    enum: ['Section A', 'Section B', 'Section C'],
   },
   markedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Teacher',
-    required: true
-  }
+    required: true,
+  },
 });
 
 // Compound index to ensure a student can only have one attendance record per day

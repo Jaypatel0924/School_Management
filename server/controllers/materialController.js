@@ -116,6 +116,8 @@
 import Material from '../models/Material.js';
 import Teacher from '../models/Teacher.js';
 import Student from '../models/Student.js';
+import User from '../models/User.js';
+import { sendNewMaterialNotification } from '../utils/email.js';
 
 // Upload material
 export const uploadMaterial = async (req, res) => {
@@ -149,6 +151,23 @@ export const uploadMaterial = async (req, res) => {
       attachmentUrl,
       uploadedBy: teacher._id
     });
+
+    // Find all students in this grade and section
+    const students = await Student.find({ grade, section }).populate('userId', 'name email');
+
+    // Send email notifications to all students
+    await Promise.all(students.map(student =>
+      sendNewMaterialNotification(
+        student.userId.email,
+        student.userId.name,
+        {
+          title,
+          subject,
+          type,
+          description
+        }
+      ).catch(err => console.error(`Failed to send material notification to ${student.userId.email}:`, err))
+    ));
 
     res.status(201).json({
       status: 'success',

@@ -1,49 +1,40 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Award, BookOpen, Users, Calendar as CalendarIcon } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Award, BookOpen, Users, Calendar as CalendarIcon } from "lucide-react";
+import HomeImages from "../images/schoolimg.jpg";
 
 const Home = () => {
   return (
     <div className="space-y-16">
       {/* Hero Section */}
-      <section 
-        className="relative h-[600px] flex items-center justify-center"
+      <section
+        className="relative h-[600px] w-full flex items-center justify-center shadow-2xl transition duration-500 hover:scale-105"
         style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
+          backgroundImage: `url(${HomeImages})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-50" />
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl font-bold mb-6">Welcome to Panchjanya Sikshan Sankul</h1>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Empowering minds, shaping futures, and building tomorrow's leaders through excellence in education.
-          </p>
-          <Link
-            to="/admissions"
-            className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300"
-          >
-            Apply Now
-          </Link>
-        </div>
-      </section>
+      ></section>
 
       {/* Features Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <Award className="h-12 w-12 text-indigo-600 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Excellence in Education</h3>
+            <h3 className="text-xl font-semibold mb-2">
+              Excellence in Education
+            </h3>
             <p className="text-gray-600">
-              Consistently ranked among the top schools with outstanding academic achievements.
+              Consistently ranked among the top schools with outstanding
+              academic achievements.
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <Users className="h-12 w-12 text-indigo-600 mb-4" />
             <h3 className="text-xl font-semibold mb-2">Expert Faculty</h3>
             <p className="text-gray-600">
-              Learn from experienced educators dedicated to nurturing young minds.
+              Learn from experienced educators dedicated to nurturing young
+              minds.
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -59,33 +50,93 @@ const Home = () => {
       {/* News & Events */}
       <section className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">Latest News & Events</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Latest News & Events
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="bg-white rounded-lg overflow-hidden shadow-lg">
-                <img
-                  src={`https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60`}
-                  alt="Event"
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-500 mb-2">
-                    <CalendarIcon className="h-4 w-4 mr-2" />
-                    <span>March {item}, 2024</span>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">Annual Science Fair</h3>
-                  <p className="text-gray-600 mb-4">
-                    Join us for an exciting showcase of student projects and innovations.
-                  </p>
-                  <Link
-                    to="/calendar"
-                    className="text-indigo-600 font-semibold hover:text-indigo-700"
-                  >
-                    Learn More →
-                  </Link>
+            {/* Event 1: Art Competition */}
+            <div className="bg-white rounded-lg overflow-hidden shadow-lg">
+              <img
+                src="https://static.wixstatic.com/media/f29599_16bfd002ed5d40c0937eba7755e6a360~mv2.png/v1/fill/w_602,h_402,al_c,q_85,enc_auto/f29599_16bfd002ed5d40c0937eba7755e6a360~mv2.png"
+                alt="Art Competition"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-6">
+                <div className="flex items-center text-sm text-gray-500 mb-2">
+                  <CalendarIcon className="h-4 w-4 mr-2" />
+                  <span>April 12, 2025</span>
                 </div>
+                <h3 className="text-xl font-semibold mb-2">
+                  Inter-School Art Competition
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Students will express their creativity through vibrant art
+                  pieces. Winners will be awarded on the same day.
+                </p>
+                <Link
+                  to="/calendar"
+                  className="text-indigo-600 font-semibold hover:text-indigo-700"
+                >
+                  Learn More →
+                </Link>
               </div>
-            ))}
+            </div>
+
+            {/* Event 2: Earth Day Activities */}
+            <div className="bg-white rounded-lg overflow-hidden shadow-lg">
+              <img
+                src="https://th.bing.com/th/id/OIP.lQIOgESOFmWZzWnGDhSNHAHaE8?rs=1&pid=ImgDetMain"
+                alt="Earth Day"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-6">
+                <div className="flex items-center text-sm text-gray-500 mb-2">
+                  <CalendarIcon className="h-4 w-4 mr-2" />
+                  <span>April 22, 2025</span>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">
+                  Earth Day Celebration
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Join us for a day of planting trees, eco-projects, and
+                  awareness campaigns on environmental protection.
+                </p>
+                <Link
+                  to="/calendar"
+                  className="text-indigo-600 font-semibold hover:text-indigo-700"
+                >
+                  Learn More →
+                </Link>
+              </div>
+            </div>
+
+            {/* Event 3: Quiz Competition */}
+            <div className="bg-white rounded-lg overflow-hidden shadow-lg">
+              <img
+                src="https://th.bing.com/th/id/OIP.sm2oWrIlt0AecaOO0c92hgHaDP?w=328&h=153&c=7&r=0&o=5&dpr=1.1&pid=1.7"
+                alt="Quiz Competition"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-6">
+                <div className="flex items-center text-sm text-gray-500 mb-2">
+                  <CalendarIcon className="h-4 w-4 mr-2" />
+                  <span>April 30, 2025</span>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">
+                  Intra-School Quiz Finals
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Teams from all grades will compete in a knowledge showdown.
+                  Come support your house and cheer them on!
+                </p>
+                <Link
+                  to="/calendar"
+                  className="text-indigo-600 font-semibold hover:text-indigo-700"
+                >
+                  Learn More →
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -93,9 +144,12 @@ const Home = () => {
       {/* Call to Action */}
       <section className="bg-indigo-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Join Our Community?</h2>
+          <h2 className="text-3xl font-bold mb-4">
+            Ready to Join Our Community?
+          </h2>
           <p className="text-xl mb-8">
-            Take the first step towards a bright future with Panchjanya Sikshan Sankul.
+            Take the first step towards a bright future with Panchjanya Sikshan
+            Sankul.
           </p>
           <div className="space-x-4">
             <Link

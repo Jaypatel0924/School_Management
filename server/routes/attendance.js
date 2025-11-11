@@ -1,10 +1,10 @@
 import express from 'express';
-import { 
-  markAttendance, 
-  markBulkAttendance, 
-  getAttendanceByClass, 
+import {
+  markBulkAttendance,
+  getAttendanceByClass,
   getStudentAttendance,
-  getMyAttendance
+  getMyAttendance,
+  getMonthlyAttendanceReport,
 } from '../controllers/attendanceController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
 
@@ -14,9 +14,10 @@ const router = express.Router();
 router.use(protect);
 
 // Routes for teachers
-router.post('/', restrictTo('teacher'), markAttendance);
 router.post('/bulk', restrictTo('teacher'), markBulkAttendance);
 router.get('/class', restrictTo('teacher', 'admin'), getAttendanceByClass);
+// Monthly attendance report for a class: ?grade=Grade 8&section=Section A&year=2025&month=11
+router.get('/monthly', restrictTo('teacher', 'admin'), getMonthlyAttendanceReport);
 
 // Routes for students
 router.get('/my-attendance', restrictTo('student'), getMyAttendance);

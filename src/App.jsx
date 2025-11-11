@@ -23,6 +23,7 @@ import Chatbot from './components/Chatbot';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import TeacherDashboard from './pages/dashboard/TeacherDashboard';
 import StudentDashboard from './pages/dashboard/StudentDashboard';
+import GenerateResult from './pages/Results/GenerateResult';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 function AppContent() {
@@ -72,6 +73,16 @@ function AppContent() {
             }
           />
           <Route path="/calendar" element={<Calendar />} />
+          
+          {/* Results Routes */}
+          <Route
+            path="/results/generate"
+            element={
+              <ProtectedRoute roles={['admin', 'teacher']}>
+                <GenerateResult />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Auth Routes */}
           <Route path="/login" element={<Login />} />

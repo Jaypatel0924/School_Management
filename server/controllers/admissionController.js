@@ -1,4 +1,6 @@
 import Admission from '../models/Admission.js';
+import Contact from '../models/Contact.js';
+import { sendAdmissionStatusEmail } from '../utils/email.js';
 
 // Submit admission form
 export const submitAdmission = async (req, res) => {
@@ -63,6 +65,28 @@ export const updateAdmissionStatus = async (req, res) => {
         status: 'error',
         message: 'Admission not found',
       });
+    }
+
+    // Send an email to the applicant notifying about status change
+    try {
+      const fullName = `${admission.firstName} ${admission.lastName}`;
+      await sendAdmissionStatusEmail(admission.email, fullName, admission.status);
+    } catch (err) {
+      console.error('Failed to send admission status email:', err);
+    }
+
+    // Also add an entry to contact so it shows up in contact admin UI
+    try {
+      await Contact.create({
+        firstName: admission.firstName,
+        lastName: admission.lastName,
+        email: admission.email,
+        subject: `Admission status updated: ${admission.status}`,
+        message: `Your admission application status has been updated to: ${admission.status}`,
+        status: 'Unread'
+      });
+    } catch (err) {
+      console.error('Failed to create contact entry for admission status:', err);
     }
 
     res.status(200).json({

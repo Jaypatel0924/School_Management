@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, UserCircle } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { Mail, Lock, Eye, EyeOff, UserCircle } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-  const [userType, setUserType] = useState('student');
+  const [userType, setUserType] = useState("student");
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,18 +17,18 @@ const Login = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const result = await login(formData.email, formData.password);
-    
+
     if (result && result.success) {
       // Get the redirect path from location state, or default to dashboard
-      const from = location.state?.from?.pathname || '/dashboard';
+      const from = location.state?.from?.pathname || "/dashboard";
       navigate(from, { replace: true });
     }
   };
@@ -39,7 +39,9 @@ const Login = () => {
         <div className="p-8">
           <div className="text-center mb-8">
             <UserCircle className="mx-auto h-12 w-12 text-indigo-600" />
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              Sign in to your account
+            </h2>
             {location.state?.from && (
               <p className="mt-2 text-sm text-gray-600">
                 Please log in to access this page
@@ -49,14 +51,14 @@ const Login = () => {
 
           {/* User Type Selection */}
           <div className="flex justify-center space-x-4 mb-8">
-            {['student', 'teacher', 'admin'].map((type) => (
+            {["student", "teacher", "admin"].map((type) => (
               <button
                 key={type}
                 onClick={() => setUserType(type)}
                 className={`px-4 py-2 rounded-full text-sm font-medium capitalize transition-all duration-300 ${
                   userType === type
-                    ? 'bg-indigo-600 text-white shadow-lg transform scale-105'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? "bg-indigo-600 text-white shadow-lg transform scale-105"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
                 {type}
@@ -66,7 +68,10 @@ const Login = () => {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="relative">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <div className="mt-1 relative">
@@ -85,14 +90,17 @@ const Login = () => {
             </div>
 
             <div className="relative">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <div className="mt-1 relative">
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   required
                   value={formData.password}
                   onChange={handleChange}
@@ -122,17 +130,20 @@ const Login = () => {
                   type="checkbox"
                   className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                <label
+                  htmlFor="remember-me"
+                  className="ml-2 block text-sm text-gray-900"
+                >
                   Remember me
                 </label>
               </div>
-
+              {/* 
               <Link
                 to="/forgot-password"
                 className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Forgot password?
-              </Link>
+              </Link> */}
             </div>
 
             <button
@@ -146,14 +157,14 @@ const Login = () => {
                   <span className="ml-2">Signing in...</span>
                 </div>
               ) : (
-                'Sign in'
+                "Sign in"
               )}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
+          {/* <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <Link
                 to="/signup"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
@@ -161,7 +172,7 @@ const Login = () => {
                 Sign up
               </Link>
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
